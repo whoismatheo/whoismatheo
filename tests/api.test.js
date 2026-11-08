@@ -133,6 +133,27 @@ test("recent: cleanup - duplicates already stored by older versions are merged (
   db.data.set("whoismatheo:recent-plays", JSON.stringify([e(A, 1_200_000, 1_400_000), e(A, 1_000_000, 1_200_000)]));
   r = await recent(); assert.deepEqual(ids(r), [A, A], "a repeat that began exactly when the previous play ended is real");
 });
+test("minecraft: real profile for sxhq (uuid, skin model, equipped cape as data uris); nothing invented when upstream fails or no server is configured", async () => {
+  const prev = global.fetch, png = Buffer.from("89504e470d0a1a0a", "hex"), id = "0123456789abcdef0123456789abcdef";
+  const tex = Buffer.from(JSON.stringify({ textures: { SKIN: { url: "https://textures.minecraft.net/texture/skin1", metadata: { model: "slim" } }, CAPE: { url: "https://textures.minecraft.net/texture/cape1" } } })).toString("base64");
+  const seen = []; let down = false;
+  global.fetch = async url => { seen.push(url); if (down) return { ok: false, status: 503, json: async () => ({}) };
+    if (url.includes("lookup/name/sxhq")) return { ok: true, json: async () => ({ id, name: "sxhq" }) };
+    if (url.includes("sessionserver")) return { ok: true, json: async () => ({ name: "sxhq", properties: [{ name: "textures", value: tex }] }) };
+    if (url.startsWith("https://textures.minecraft.net/")) return { ok: true, arrayBuffer: async () => png };
+    return { ok: false, status: 404, json: async () => ({}) }; };
+  try {
+    let r = await call(load("minecraft.js", {})); const j = JSON.parse(r.body);
+    assert.equal(r.status, 200); assert.equal(j.name, "sxhq"); assert.equal(j.uuid, "01234567-89ab-cdef-0123-456789abcdef"); assert.equal(j.edition, "java");
+    assert.equal(j.skin.model, "slim"); assert(j.skin.data.startsWith("data:image/png;base64,")); assert.equal(j.capes.length, 1); assert(j.capes[0].data.startsWith("data:image/png;base64,"));
+    assert.equal(j.server, null, "no server invented"); assert(/s-maxage=600/.test(r.headers["cache-control"]));
+    assert(seen.every(u => /^https:\/\/(api\.minecraftservices\.com|sessionserver\.mojang\.com|textures\.minecraft\.net)\//.test(u)));
+    r = await call(load("minecraft.js", { MC_SERVER_NAME: "Example", MC_SERVER_ADDRESS: "play.example.net", MC_SERVER_DATE: "2026-11-01" })); const s2 = JSON.parse(r.body).server;
+    assert.deepEqual([s2.name, s2.address, s2.seen, s2.source], ["Example", "play.example.net", "2026-11-01", "manual"]);
+    r = await call(load("minecraft.js", { MC_SERVER_ADDRESS: "bad host/../x" })); assert.equal(JSON.parse(r.body).server, null, "invalid address ignored");
+    down = true; r = await call(load("minecraft.js", {})); assert.equal(r.status, 503); assert.deepEqual(JSON.parse(r.body), { error: "unavailable" });
+  } finally { global.fetch = prev; }
+});
 test("recent: never more than 10 entries; the oldest drops out; order newest -> oldest", async () => {
   reset(); let r; for (let n = 0; n < 14; n++) r = await play(String.fromCharCode(65 + n).repeat(22), "Song " + n);
   assert.equal(r.json.items.length, 10); assert.equal(r.json.items[0].title, "Song 13"); assert.equal(r.json.items[9].title, "Song 4");

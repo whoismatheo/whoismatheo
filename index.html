@@ -18,7 +18,7 @@
 <body>
 <div id="stars" aria-hidden="true"></div>
 <header class="nav intro-i" style="--d:.1s">
-  <nav aria-label="Main"><span class="brand" aria-hidden="true">✦</span><a href="#home" data-i18n="home"></a><a href="#about" data-i18n="about"></a><a href="#history" data-i18n="music"></a></nav>
+  <nav aria-label="Main"><span class="brand" aria-hidden="true">✦</span><a href="#home" data-i18n="home"></a><a href="#about" data-i18n="about"></a><a href="#minecraft">minecraft</a><a href="#history" data-i18n="music"></a></nav>
   <div class="ctrl">
     <button id="theme" class="btn" data-i18n-label="theme" title="Theme"><svg class="ic sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="ic moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></svg></button>
     <div class="lang" id="langwrap"><button id="lang" class="btn lang-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="lang-menu" data-i18n-label="language"><span id="lang-cur" class="mono">EN</span><svg class="ic chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button><ul id="lang-menu" class="lang-menu" role="listbox" tabindex="-1" data-i18n-label="language"><li role="option" id="lo-en" data-lang="en" style="--i:0"><i></i><span class="mono">EN</span><span>English</span></li><li role="option" id="lo-es" data-lang="es" style="--i:1"><i></i><span class="mono">ES</span><span>Español</span></li><li role="option" id="lo-ru" data-lang="ru" style="--i:2"><i></i><span class="mono">RU</span><span>Русский</span></li><li role="option" id="lo-de" data-lang="de" style="--i:3"><i></i><span class="mono">DE</span><span>Deutsch</span></li><li role="option" id="lo-fr" data-lang="fr" style="--i:4"><i></i><span class="mono">FR</span><span>Français</span></li></ul></div>
@@ -77,6 +77,30 @@
   </div>
 </section>
 
+<section id="minecraft" class="card rv" aria-labelledby="mc-title">
+  <div class="row mono small"><span><i class="dot on"></i> <span id="mc-title">minecraft profile</span></span><span id="mc-state">idle</span></div>
+  <div class="mc-grid">
+    <div class="mc-view">
+      <canvas id="mc-canvas" aria-label="3d model of the minecraft skin, drag to rotate"></canvas>
+      <p id="mc-msg" class="mc-msg mono" role="status" hidden></p>
+      <button id="mc-rot" class="btn mono" type="button" aria-pressed="false">pause</button>
+    </div>
+    <div class="mc-side">
+      <dl class="mc-info mono">
+        <div><dt>username</dt><dd id="mc-name">—</dd></div>
+        <div><dt>uuid</dt><dd><span id="mc-uuid">—</span> <button id="mc-copy" class="mc-copy" type="button">copy</button></dd></div>
+        <div><dt>edition</dt><dd>java edition</dd></div>
+        <div><dt>model</dt><dd id="mc-model">—</dd></div>
+      </dl>
+      <h3 class="mc-h mono">capes</h3>
+      <div id="mc-capes" class="mc-capes"><p class="mc-none mono">loading…</p></div>
+      <h3 class="mc-h mono">last played server</h3>
+      <div id="mc-server" class="mc-srv"><p class="mc-none mono">loading…</p></div>
+      <h3 class="mc-h mono">skin preview</h3>
+      <div id="mc-prev" class="mc-prev"></div>
+    </div>
+  </div>
+</section>
 <section id="history" class="rv hist-sec" hidden>
   <div class="row hist-head mono small"><span><i class="dot on"></i> <span data-i18n="history"></span></span><span class="car-ctl"><button id="car-prev" class="btn car-btn" type="button" data-i18n-label="prev" disabled><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button id="car-next" class="btn car-btn" type="button" data-i18n-label="next" disabled><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></span></div>
   <ul id="hist" class="hist" tabindex="0" data-i18n-label="history"></ul>
@@ -98,5 +122,6 @@
   </div>
 </dialog>
 <script src="script.js"></script>
+<script src="minecraft.js" defer></script>
 </body>
 </html>
