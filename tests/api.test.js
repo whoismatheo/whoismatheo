@@ -135,7 +135,7 @@ test("recent: cleanup - duplicates already stored by older versions are merged (
 });
 test("minecraft: real profile for sxhq (uuid, skin model, equipped cape as data uris); nothing invented when upstream fails or no server is configured", async () => {
   const prev = global.fetch, png = Buffer.from("89504e470d0a1a0a", "hex"), id = "0123456789abcdef0123456789abcdef";
-  const tex = Buffer.from(JSON.stringify({ textures: { SKIN: { url: "https://textures.minecraft.net/texture/skin1", metadata: { model: "slim" } }, CAPE: { url: "https://textures.minecraft.net/texture/cape1" } } })).toString("base64");
+  const tex = Buffer.from(JSON.stringify({ textures: { SKIN: { url: "http://textures.minecraft.net/texture/skin1", metadata: { model: "slim" } }, CAPE: { url: "http://textures.minecraft.net/texture/cape1" } } })).toString("base64");
   const seen = []; let down = false;
   global.fetch = async url => { seen.push(url); if (down) return { ok: false, status: 503, json: async () => ({}) };
     if (url.includes("lookup/name/sxhq")) return { ok: true, json: async () => ({ id, name: "sxhq" }) };

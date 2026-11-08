@@ -1,7 +1,7 @@
 const { sendJson, allowGet } = require("./_lib/http");
 
 const NAME = "sxhq";
-const TEX = /^https:\/\/textures\.minecraft\.net\//;
+const TEX = /^https?:\/\/textures\.minecraft\.net\//;
 const HOST = /^[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:\d{1,5})?$/i;
 let memo = null;
 
@@ -11,7 +11,7 @@ const getJson = async url => {
   return r.json();
 };
 const dataUri = async url => {
-  const r = await fetch(url, { signal: AbortSignal.timeout(6000) });
+  const r = await fetch(url.replace(/^http:/, "https:"), { signal: AbortSignal.timeout(6000) });
   if (!r.ok) throw new Error("texture " + r.status);
   return "data:image/png;base64," + Buffer.from(await r.arrayBuffer()).toString("base64");
 };

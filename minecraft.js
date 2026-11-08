@@ -11,11 +11,11 @@
   const note = t => { const m = $("#mc-msg"); m.textContent = t; m.hidden = !t; };
 
   const load = async () => {
-    try { const c = JSON.parse(sessionStorage.getItem("mc") || "null"); if (c && Date.now() - c.t < 6e5) return c.v; } catch (e) {}
+    try { const c = JSON.parse(sessionStorage.getItem("mc2") || "null"); if (c && Date.now() - c.t < 6e5) return c.v; } catch (e) {}
     const r = await fetch("/api/minecraft");
     if (!r.ok) throw new Error("http " + r.status);
     const v = await r.json();
-    try { sessionStorage.setItem("mc", JSON.stringify({ t: Date.now(), v })); } catch (e) {}
+    try { sessionStorage.setItem("mc2", JSON.stringify({ t: Date.now(), v })); } catch (e) {}
     return v;
   };
   const lib = () => window.skinview3d ? Promise.resolve() : new Promise((ok, no) => { const s = el("script"); s.src = LIB; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
@@ -102,6 +102,7 @@
     const rot = $("#mc-rot");
     const paint = () => { rot.textContent = viewer.autoRotate ? "pause" : "rotate"; rot.setAttribute("aria-pressed", String(!viewer.autoRotate)); };
     rot.onclick = () => { viewer.autoRotate = !viewer.autoRotate; paint(); };
+    rot.hidden = false;
     paint();
     previews();
   };

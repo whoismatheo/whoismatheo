@@ -426,3 +426,4 @@ footer::after{content:"// whoismatheo // v1.0";position:absolute;right:1.2rem;bo
 .mc-shot figcaption{font-size:.6rem;letter-spacing:.12em;color:var(--mt)}
 @media(max-width:767px){.mc-grid{grid-template-columns:minmax(0,1fr)}.mc-view{aspect-ratio:4/5;max-height:70vh}}
 @media(max-width:600px){nav a{padding:.8rem .45rem;letter-spacing:.04em;font-size:.72rem}}
+.mc-view .btn[hidden]{display:none}
