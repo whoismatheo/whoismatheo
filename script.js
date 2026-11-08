@@ -331,4 +331,5 @@ if (typeof IntersectionObserver !== "undefined") {
   const links = [...document.querySelectorAll("nav a")];
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(a => a.toggleAttribute("aria-current", a.hash === "#" + e.target.id)); }), { rootMargin: "-45% 0px -50% 0px" });
   ["home", "about", "history"].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
+  [["#home", ".orbit"], ["#about", ".geo"]].forEach(([k, v]) => { const sec = document.querySelector(k), svg = document.querySelector(v); if (sec && svg && svg.pauseAnimations) new IntersectionObserver(([e]) => e.isIntersecting ? svg.unpauseAnimations() : svg.pauseAnimations()).observe(sec); });
 }
