@@ -11,8 +11,6 @@ a{color:var(--mu);text-decoration:none;transition:color .2s}a:hover,a:focus-visi
 #stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--tx);box-shadow:0 0 6px var(--glow);animation:tw 5s ease-in-out infinite,dr 40s linear infinite alternate}
 @keyframes tw{50%{opacity:.15}}@keyframes dr{to{transform:translate(14px,-22px)}}
 .nav,main,footer{position:relative;z-index:1}
-/* Header: links on the left, controls on the right. Labels never wrap (nowrap) and the controls never shrink. If the translated links
-   (RU/FR are the longest) don't fit beside the controls, the bar wraps on purpose: links spread over row 1, controls right-aligned on row 2. */
 .nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.25rem 1rem;padding:1rem 1.2rem;max-width:1000px;margin:auto;z-index:20}
 .nav nav{display:flex;flex-wrap:wrap;gap:0 1.2rem;min-width:0}.nav nav a{white-space:nowrap}
 .ctrl{display:flex;flex:none;gap:.5rem;margin-left:auto}
@@ -56,20 +54,17 @@ dialog h2{font-weight:400;margin-bottom:1rem;letter-spacing:.1em}#l-body{white-s
 #close{position:absolute;top:.6rem;right:.6rem}
 @media(prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
-/* ===== Motion system v2 ===== */
 .ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;display:block}
 @keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(6px)}}
 .js .intro-i{animation:rise 1.2s cubic-bezier(.16,.84,.24,1) var(--d,0s) both}
 .quick .intro-i{animation-duration:.45s;animation-delay:calc(var(--d,0s)*.2)}
 .js .rv{opacity:0;transform:translateY(18px);animation:none;transition:opacity .9s,transform .9s cubic-bezier(.16,.84,.24,1)}
 .js .rv.in{opacity:1;transform:none}
-/* stars */
 .sl{position:absolute;left:-50px;right:-50px;top:-50px;height:calc(100% + 400px);will-change:transform;transition:transform .8s cubic-bezier(.2,.6,.2,1)}
 .sd{position:absolute;inset:0;animation:dr var(--dd,120s) ease-in-out infinite alternate}
 #stars i{animation:none;box-shadow:none}#stars i.t{animation:tw var(--t,5s) ease-in-out var(--dl,0s) infinite}
 @keyframes tw{50%{opacity:.12}}@keyframes dr{to{transform:translate3d(18px,-26px,0)}}
 html.paused *{animation-play-state:paused!important}
-/* orbits */
 .twinkle{transform-box:fill-box;transform-origin:center;animation:ignite 1.6s cubic-bezier(.2,.8,.2,1) .4s both,breathe 7s ease-in-out 2s infinite}
 .quick .twinkle{animation-delay:0s,.5s}
 @keyframes ignite{from{opacity:0;transform:scale(0)}}@keyframes breathe{50%{opacity:.75;transform:scale(.9)}}
@@ -80,7 +75,6 @@ html.paused *{animation-play-state:paused!important}
 .geo-wrap{display:grid;place-items:center;background:radial-gradient(var(--bd) 1px,transparent 1.2px) 0 0/18px 18px;-webkit-mask:radial-gradient(circle,#000 35%,transparent 72%);mask:radial-gradient(circle,#000 35%,transparent 72%)}
 .geo{width:min(260px,80%)}.geo .g1{fill:none;stroke:currentColor;stroke-opacity:.3;stroke-dasharray:1 5}.geo .g2{fill:none;stroke:currentColor;stroke-opacity:.22}
 .o3{animation:sp 140s linear infinite}
-/* controls */
 .btn{transition:border-color .25s,box-shadow .25s,transform .2s,background-color .4s,color .4s}
 .btn:active:not(:disabled){transform:scale(.94)}
 @media(hover:hover){.btn:hover:not(:disabled){transform:translateY(-1px)}}
@@ -90,7 +84,6 @@ nav a:hover,nav a:focus-visible,nav a:active{background-size:100% 1px}
 #theme{position:relative;padding:0}#theme .ic{position:absolute;inset:0;margin:auto;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .35s;display:block!important}
 [data-theme=dark] .sun,[data-theme=light] .moon{opacity:0;transform:rotate(-80deg) scale(.4)}
 [data-theme=dark] .moon,[data-theme=light] .sun{opacity:1;transform:none}
-/* presence */
 .swap{display:inline-block;animation:sw .5s cubic-bezier(.2,.8,.2,1) both}#name.swap,#activity.swap{display:block}
 @keyframes sw{from{opacity:0;transform:translateY(5px);filter:blur(3px)}}
 #conn-text,#status{display:inline-block}
@@ -99,7 +92,6 @@ nav a:hover,nav a:focus-visible,nav a:active{background-size:100% 1px}
 #discord[data-c=connecting] .who{animation:br 1.8s ease-in-out infinite}@keyframes br{50%{opacity:.45}}
 #discord[data-c=unavailable] .avatar,#discord[data-c=notConfigured] .avatar{opacity:.5}
 #spotify:not([hidden]){animation:rise .7s cubic-bezier(.16,.84,.24,1) both}
-/* heart + letter */
 .heart .ic{width:22px;height:22px;margin:auto;animation:beat 7s ease-in-out infinite}
 @keyframes beat{0%,70%,100%{transform:scale(1)}76%{transform:scale(1.18)}82%{transform:scale(1)}88%{transform:scale(1.1)}}
 .heart::after{content:"";position:absolute;inset:8px;border:1px solid currentColor;border-radius:50%;opacity:0}
@@ -114,7 +106,6 @@ dialog[open] #l-body{animation:rise 1s .3s both}
 .heart{top:.9rem;bottom:auto}
 footer p{width:fit-content;margin:0 auto}
 
-/* ===== Language selector ===== */
 .lang{position:relative}
 .lang-btn{display:inline-flex;align-items:center;gap:.3rem;padding:0 .75rem 0 .85rem;letter-spacing:.08em}
 .chev{width:14px;height:14px;opacity:.7;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
@@ -133,11 +124,9 @@ footer p{width:fit-content;margin:0 auto}
 @media(hover:none){.lang-menu li{min-height:44px}}
 .lang-menu:focus-visible{outline:none}.lang-menu li.act{box-shadow:inset 0 0 0 1px var(--bd)}
 
-/* About Me text block */
 #about-text h3{font-weight:400;font-size:1.05rem;color:var(--tx);margin-bottom:1rem}
 #about-text p+p{margin-top:.9rem}#about-text .about-close{margin-top:1.4rem;color:var(--mu);opacity:.8}
 
-/* ===== Compact layout (hero + cards) ===== */
 .hero{min-height:0;gap:.5rem;padding:.1rem 0 .5rem}
 .orbit{width:min(280px,70vw)}
 .tag{font-size:.8rem;letter-spacing:.14em;line-height:1.5}
@@ -150,14 +139,12 @@ footer p{width:fit-content;margin:0 auto}
 }
 @media(min-width:768px){.hero{padding:1.5rem 0 1rem;gap:1rem}.orbit{width:min(400px,50vw)}.tag{font-size:.9rem;letter-spacing:.2em}}
 
-/* ===== Theme switch: short, light, compositor-friendly ===== */
 html.tt{--tt:.2s}
 @media(prefers-reduced-motion:reduce){html.tt{--tt:.08s}}
 html.tt body,html.tt .card,html.tt .btn,html.tt dialog,html.tt .tag,html.tt .muted,html.tt #about-text,html.tt #about-text h3,html.tt footer p,html.tt .heart,html.tt nav a,html.tt .orbit,html.tt .geo,html.tt .geo-wrap{transition:background-color var(--tt) ease-out,color var(--tt) ease-out,border-color var(--tt) ease-out!important}
 #theme .ic{transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .2s}
 .btn{touch-action:manipulation}
 
-/* ===== v7: mute button, Spotify card, history, compact nav ===== */
 #uname{margin-top:-.15rem}
 .art{position:relative;flex:none;width:var(--sp-art,64px);height:var(--sp-art,64px);border:1px solid var(--bd);border-radius:6px;display:grid;place-items:center;color:var(--mu);overflow:hidden}
 .art #sp-art{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:0;object-fit:cover}
@@ -169,26 +156,21 @@ html.tt body,html.tt .card,html.tt .btn,html.tt dialog,html.tt .tag,html.tt .mut
 .sp-prog i{flex:1;height:2px;background:var(--bd);position:relative;overflow:hidden;border-radius:2px}
 .sp-prog b{position:absolute;inset:0;background:var(--tx);transform-origin:left;transform:scaleX(0);transition:transform 1s linear}
 
-/* ===== v8: Spotify activity from the Web API + Music section ===== */
 .sp-head{display:flex;align-items:center;gap:.5rem;min-height:1.3rem}.sp-head p{margin:0}
 .eq{display:none;align-items:flex-end;gap:2px;height:12px;flex:none}
 #spotify.playing .eq{display:inline-flex}
 .eq i{display:block;width:3px;background:var(--tx);border-radius:1px;transform-origin:bottom;animation:eq 1s ease-in-out infinite}
 .eq i:nth-child(1){height:55%}.eq i:nth-child(2){height:100%;animation-delay:-.4s}.eq i:nth-child(3){height:75%;animation-delay:-.75s}
 @keyframes eq{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
-/* on phones the empty state stays visible as a single quiet line (the cover block is hidden) */
 @media(max-width:767px){#spotify.idle{display:block}#spotify.idle .who{display:none}}
 
-/* ===== v9: Discord profile card (real banner) + Recently Played carousel ===== */
 #discord{--bn-gap:1rem}
 .banner{position:relative;aspect-ratio:5/2;max-height:200px;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--bd);margin-bottom:var(--bn-gap);background:radial-gradient(var(--bd) 1px,transparent 1.2px) 0 0/18px 18px,var(--bg)}
 .banner[data-acc="1"]{background:var(--acc)}
 .banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
 .banner img[hidden]{display:none}
 .pf-main{min-width:0;--pf-inset:.9rem}
-.pf-main>:not(.pf-who){margin-inline:var(--pf-inset)}   /* status, custom status, activity, Spotify logo + bars, badges, bio: same inset as the avatar and the name */
-/* The avatar is pulled up by the banner gap + HALF of its own height, so the banner's bottom edge always crosses its vertical centre (50% over the banner, 50% below), on desktop and on phones. It is top-aligned so the height of the name block never shifts it. */
-/* Discord profile layout: the avatar straddles the banner's bottom edge (exactly 50% over it, 50% below) at the left, and the display name + @username sit BELOW the avatar. Proportions follow Discord's profile (avatar ~55-60% of the banner height, thick ring in the card colour, status dot on the bottom-right). */
+.pf-main>:not(.pf-who){margin-inline:var(--pf-inset)}
 .pf-who{--av:108px;--ring:6px;flex-direction:column;align-items:flex-start;gap:.55rem;margin:0 var(--pf-inset) .8rem var(--pf-inset)}
 .pf-who .avatar{z-index:2;width:var(--av);height:var(--av);margin-top:calc(-1 * var(--bn-gap) - var(--av) / 2);background:var(--card);border:var(--ring) solid var(--card);box-shadow:none}
 .pf-who .avatar img:not(.deco){border-radius:50%}
@@ -201,7 +183,6 @@ html.tt body,html.tt .card,html.tt .btn,html.tt dialog,html.tt .tag,html.tt .mut
 .badges{display:flex;flex-wrap:wrap;gap:.4rem;list-style:none;margin:.2rem 0 .7rem;padding:0}.badges[hidden]{display:none}
 .badges li{border:1px solid var(--bd);border-radius:14px;overflow-wrap:anywhere;padding:.18rem .65rem;font-size:.72rem;line-height:1.3;color:var(--tx);background:color-mix(in srgb,var(--tx) 4%,transparent)}
 @media(max-width:767px){.pf-main{--pf-inset:.6rem}.pf-who{--av:80px;--ring:5px}.pf-who .st{width:22px;height:22px}.pf-names h2{font-size:1.45rem}}
-/* ===== v11: Recently played = its own section (no box), album covers are the protagonists. Native scroll + snap (swipe), quiet arrows, dots; the page never scrolls sideways ===== */
 .hist-sec{margin:2.8rem 0 1.4rem;padding:0}
 .hist-head{align-items:center;padding-bottom:.8rem;margin-bottom:1.1rem;border-bottom:1px solid var(--bd)}
 .car-ctl{display:inline-flex;gap:.4rem}.car-ctl[hidden]{display:none}
@@ -209,7 +190,6 @@ html.tt body,html.tt .card,html.tt .btn,html.tt dialog,html.tt .tag,html.tt .mut
 @media(hover:none){.car-btn{width:44px;height:44px;min-width:44px;min-height:44px}}
 .hist{--w:clamp(210px,30vw,300px);list-style:none;margin:0;padding:.6rem 0 1.5rem;position:relative;overflow:hidden;height:calc(var(--w) + 8.2rem);perspective:1400px;touch-action:pan-y;user-select:none;-webkit-user-select:none;outline-offset:2px;counter-reset:n}
 .hist[hidden]{display:none}
-/* coverflow: every song sits in the same spot (centre) and is moved by its distance data-o; the centre one is biggest and in front */
 .hist li{position:absolute;left:50%;top:.6rem;width:var(--w);margin-left:calc(var(--w) / -2);min-width:0;counter-increment:n;transform-origin:50% calc(var(--w) / 2);
  transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .5s,filter .5s;opacity:0;pointer-events:none;transform:translateX(0) scale(.5);z-index:1}
 .hist li[data-o="0"]{transform:none;opacity:1;pointer-events:auto;z-index:5}
@@ -219,7 +199,6 @@ html.tt body,html.tt .card,html.tt .btn,html.tt dialog,html.tt .tag,html.tt .mut
 .hist li[data-o="-2"]{transform:translateX(-104%) scale(.66) rotateY(22deg);opacity:1;pointer-events:auto;z-index:3;filter:brightness(.4)}
 .hist li[data-o="3"]{transform:translateX(130%) scale(.5)}.hist li[data-o="-3"]{transform:translateX(-130%) scale(.5)}
 .hist li:not([data-o]){opacity:1;position:relative;left:auto;margin:0 auto}
-/* only the centre song shows its text (the covers behind it are just covers) */
 .hist li:not([data-o="0"]) strong,.hist li:not([data-o="0"]) .ar,.hist li:not([data-o="0"]) .mt{opacity:0}
 .hist strong,.hist .ar,.hist .mt{transition:opacity .35s;text-align:center}
 .hist .mt{justify-content:center}
@@ -244,7 +223,6 @@ html.tt body,html.tt .card,html.tt .btn,html.tt dialog,html.tt .tag,html.tt .mut
 .car-dots button::after{content:"";position:absolute;inset:0;margin:auto;width:6px;height:6px;border-radius:50%;background:var(--bd);transition:background .3s,transform .3s}
 .car-dots button[aria-current=true]::after{background:var(--tx);transform:scale(1.25)}
 #hist-msg{margin:0;padding:.3rem 0 .6rem;min-height:2.4rem}
-/* phones: the stage spans the whole screen width, the neighbours peek out on both sides (only 3 covers), the page itself never scrolls sideways */
 @media(max-width:767px){
  .hist-sec{margin:2rem 0 1rem}
  .hist{--w:min(60vw,250px);margin-inline:-1rem}
@@ -252,15 +230,12 @@ html.tt body,html.tt .card,html.tt .btn,html.tt dialog,html.tt .tag,html.tt .mut
  .hist li[data-o="2"],.hist li[data-o="-2"]{opacity:0;pointer-events:none}
 }
 
-
-/* ===== v10: About Me (bio), robust wrapping, French/Russian mobile typography ===== */
 .bio{white-space:pre-line;overflow-wrap:anywhere;font-size:.85rem;line-height:1.55;color:var(--mu);margin:0 0 .8rem}.bio[hidden]{display:none}
 .bio b{color:var(--tx);font-weight:600}.bio s{opacity:.7}.bio code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92em;padding:0 .25em;border-radius:4px;background:var(--bd)}
 .split>*,.pf-main,.sp-info,.who>div{min-width:0}
 .card{overflow-wrap:break-word}
 .row{flex-wrap:wrap;align-items:center;row-gap:.35rem}.row>span{min-width:0}
 @media(max-width:560px){
- /* French and Russian are longer than English: smaller, fluid type and tighter tracking, on phones only. English stays as it was. */
  html[lang=fr] .nav nav a,html[lang=ru] .nav nav a{font-size:clamp(.72rem,3.1vw,.86rem)}
  html[lang=fr] .nav nav,html[lang=ru] .nav nav{gap:0 .4rem}
  html[lang=fr] .tag,html[lang=ru] .tag{font-size:clamp(.7rem,3.2vw,.8rem);letter-spacing:.07em;text-wrap:balance}
@@ -275,8 +250,6 @@ html.tt body,html.tt .card,html.tt .btn,html.tt dialog,html.tt .tag,html.tt .mut
 }
 @media(max-width:360px){.nav nav a{font-size:clamp(.7rem,3.2vw,.8rem)}.card{padding:.85rem}.pf-who{gap:.7rem}}
 
-/* ===== v11: dedication = text (left) + GIF (right); one centred column on phones ===== */
-/* the global "*{margin:0}" reset removed the dialog's own margin:auto, which left it stuck to the left edge: centre it again */
 #letter{margin:auto;width:min(980px,calc(100vw - 2rem));padding:clamp(1.6rem,4vw,3rem)}
 .ded{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,3rem);align-items:stretch;min-width:0}
 #letter #l-body{align-self:center;min-width:0;font-size:1.02rem;line-height:1.8;overflow-wrap:anywhere}
@@ -290,12 +263,10 @@ html.tt body,html.tt .card,html.tt .btn,html.tt dialog,html.tt .tag,html.tt .mut
  .ded-gif{min-height:0;height:min(72vw,320px)}
 }
 
-/* ===== v11: while music is the only activity, the activity line is just a small monochrome Spotify logo + the rhythm bars (the words "listening to spotify" appear once, in the Spotify block below) ===== */
 .act-sp{display:flex;align-items:center;gap:.55rem}.act-sp[hidden]{display:none}
 .act-sp svg{width:15px;height:15px;flex:none;fill:currentColor}
 .act-sp .eq{display:inline-flex}
 
-/* ===== v12: Spotify block uses the free space: bigger cover (grows downwards with the profile column) and a bigger song name ===== */
 #spotify{--sp-art:96px}
 #spotify .who{gap:1rem;align-items:center}
 #sp-song{font-size:clamp(1.15rem,4.6vw,1.35rem);font-weight:600;line-height:1.25}

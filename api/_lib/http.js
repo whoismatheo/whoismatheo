@@ -1,4 +1,3 @@
-/* Helpers shared by the Vercel functions in /api. The leading underscore keeps this folder from being a public route. */
 "use strict";
 
 function sendJson(res, status, body, cacheControl, headers) {
@@ -19,7 +18,6 @@ function allowGet(req, res) {
 
 const timeout = ms => (typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(ms || 8000) : undefined);
 
-/* Public errors carry a short code only; details go to the function logs (never a secret). */
 function sendError(res, e, tag, cacheControl) {
   const code = e && e.code ? e.code : "unavailable";
   console.error("[" + tag + "]", code, (e && (e.detail || e.message)) || e);

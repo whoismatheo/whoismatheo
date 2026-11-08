@@ -4,9 +4,9 @@ and reports horizontal overflow, banner size and screenshots (tests/e2e/out/). R
 import json, sys, threading, http.server, socketserver, functools, time
 from playwright.sync_api import sync_playwright
 import os
-ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),"..",".."))   # project root
+ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),"..",".."))
 HERE=os.path.dirname(os.path.abspath(__file__))
-CHROME=os.environ.get("CHROME_PATH")   # optional: path to a Chromium binary; default = the one Playwright installs
+CHROME=os.environ.get("CHROME_PATH")
 class Q(http.server.SimpleHTTPRequestHandler):
     def log_message(self,*a): pass
 def serve(port):

@@ -1,7 +1,3 @@
-/* Persistent storage for the history: Upstash Redis through its REST API (works on Vercel, no dependencies, free tier).
-   Variables (added automatically when you create the database from the Vercel Marketplace, or copy them from the Upstash console):
-     UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN   (the legacy Vercel KV names KV_REST_API_URL + KV_REST_API_TOKEN also work)
-   The token only ever lives on the server. No local files are used: Vercel's filesystem is ephemeral. */
 "use strict";
 const { timeout, fail } = require("./http");
 
@@ -31,7 +27,6 @@ async function loadItems() {
   try { const v = JSON.parse(raw); return Array.isArray(v) ? v : []; } catch (_) { return []; }
 }
 const saveItems = items => cmd(["SET", KEY, JSON.stringify(items)]);
-/* short lock so that two simultaneous requests cannot both add the same song */
 const lock = async () => (await cmd(["SET", LOCK, "1", "NX", "EX", "5"])) === "OK";
 const unlock = () => cmd(["DEL", LOCK]).catch(() => {});
 

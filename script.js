@@ -1,9 +1,7 @@
-/* ===== CONFIG: edit here ===== */
 const CONFIG = {
-  discordUserId: "1356268956398387423", // string, never a number (Discord IDs exceed JS integer precision)          // your numeric Discord ID (join discord.gg/lanyard so Lanyard can see you)
-  dedicationMessage: ""       // optional: any text here replaces the dedication in EVERY language; empty = the translated dedication (key "dedication" in T below)
+  discordUserId: "1356268956398387423",
+  dedicationMessage: ""
 };
-/* ===== Translations: [en, es, ru, de, fr] ===== */
 const LANGS = ["en","es","ru","de","fr"];
 const T = {
  home:["home","inicio","главная","start","accueil"],
@@ -75,11 +73,9 @@ const T = {
  footer:["somewhere on the internet","en algún lugar de internet","где-то в интернете","irgendwo im Internet","quelque part sur internet"]
 };
 const $ = s => document.querySelector(s);
-/* storage can throw (private mode, in-app browsers, blocked cookies): every access goes through this guard */
 const store = { get: k => { try { return localStorage.getItem(k); } catch(e){ return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch(e){} } };
 let lang = store.get("lang"); if (!LANGS.includes(lang)) lang = "en";
 const tr = k => (T[k] || [])[LANGS.indexOf(lang)] || k;
-/* Static texts (nav, About Me, labels) and scroll-reveal are set up FIRST, so they cannot be blocked by anything below (audio, Lanyard, Spotify, storage) */
 function applyStaticText(){
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-i18n]").forEach(e => e.textContent = tr(e.dataset.i18n));
@@ -90,13 +86,11 @@ applyStaticText();
 const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.12}) : null;
 document.querySelectorAll(".rv").forEach(e => io ? io.observe(e) : e.classList.add("in"));
 let conn = CONFIG.discordUserId ? "connecting" : "notConfigured", pres = null;
-let apiNow = null, apiNowAt = 0;   /* fallback "playing now" from /api/recent (Last.fm on the server) when Discord reports no Spotify */
+let apiNow = null, apiNowAt = 0;
 
 function setText(el, t){ if (el.textContent === t) return; el.textContent = t; if (!el.dataset.rdy){ el.dataset.rdy = 1; return; } el.classList.remove("swap"); void el.offsetWidth; el.classList.add("swap"); }
 let avBad = "", bannerBad = "", spT, histT, prof = null, profFails = 0, profT;
-/* Spotify as Discord reports it (Lanyard's `spotify` object). Same source as before: nothing is invented, no Spotify API involved. */
 const TRACK_RE = /^[A-Za-z0-9]{22}$/;
-/* Fallback: the Spotify activity as Discord itself reports it (type 2 "Spotify"), used only when Lanyard's parsed `spotify` object is missing */
 function spotifyActivity(d){
   const a = d && Array.isArray(d.activities) ? d.activities.find(x => x && x.type === 2 && (x.id === "spotify:1" || x.name === "Spotify")) : null; if (!a || !a.details) return null;
   const img = String((a.assets && a.assets.large_image) || "").replace(/^spotify:/, "");
@@ -109,31 +103,28 @@ function spotifyOf(d){
     cover: /^https:\/\//.test(s.album_art_url || "") ? s.album_art_url : "", url: id ? "https://open.spotify.com/track/" + id : "", startMs: st, endMs: en > st ? en : 0 };
 }
 const safeUrl = u => /^https:\/\/(cdn\.discordapp\.com|media\.discordapp\.net)\//.test(u || "") ? u : "";
-/* ===== Discord card: live presence (Lanyard WebSocket) + public profile (GET /api/profile) ===== */
 let favSrc = "";
 function setFavicon(u){ if (!u || u === favSrc) return; favSrc = u;
   const put = h => { try { const l = $("#favicon"); l.setAttribute("href", h); l.removeAttribute("type"); } catch(e){} };
-  put(u);   /* immediately the plain Discord image; then upgraded to a square with rounded corners drawn on a canvas (if the CDN allows it; otherwise the plain image stays). assets/favicon.png (in the HTML) is the first-paint fallback */
+  put(u);
   if (typeof Image === "undefined") return;
   try { const im = new Image(); im.crossOrigin = "anonymous";
     im.onload = () => { try { const c = document.createElement("canvas"), n = 128, r = 30; c.width = c.height = n; const x = c.getContext("2d");
       x.beginPath(); x.moveTo(r, 0); x.arcTo(n, 0, n, n, r); x.arcTo(n, n, 0, n, r); x.arcTo(0, n, 0, 0, r); x.arcTo(0, 0, n, 0, r); x.closePath(); x.clip(); x.drawImage(im, 0, 0, n, n);
       if (favSrc === u) put(c.toDataURL("image/png")); } catch(e){} };
-    im.src = u.replace(/size=\d+/, "size=128"); } catch(e){} }   /* the tab icon is your avatar as a rounded square, never animated */
+    im.src = u.replace(/size=\d+/, "size=128"); } catch(e){} }
 function renderBanner(){
   const box = $("#banner"), img = $("#banner-img"), b = prof && prof.banner;
   const src = b ? safeUrl(still ? b.staticUrl : b.url) : "", acc = prof && /^#[0-9a-f]{6}$/i.test(prof.accentColor || "") ? prof.accentColor : "";
   box.style.setProperty("--acc", acc);
-  /* no banner: Discord itself shows the profile accent colour as a flat banner; without it, a quiet dotted background. Never a made-up image. */
   box.dataset.acc = !src && acc ? "1" : "0";
   if (src && src !== bannerBad){ if (img.getAttribute("src") !== src) img.src = src; img.hidden = false; box.dataset.has = "1"; } else { img.hidden = true; box.dataset.has = "0"; }
 }
-/* About Me: the Discord API does not expose it. The only supported source is a Lanyard KV key named "bio" that YOU set (see README). Otherwise nothing is shown. */
 function bioText(){
   const raw = (pres && pres.kv && pres.kv.bio) || (prof && prof.bio) || ""; if (typeof raw !== "string") return "";
   return raw.replace(/\\n/g, "\n").replace(/\r\n?/g, "\n").trim().slice(0, 600);
 }
-function bioNodes(t){ /* tiny, safe subset of Discord markdown: **bold** ~~strike~~ `code` *italic* _italic_ ; everything else stays plain text (textContent only, no innerHTML) */
+function bioNodes(t){
   const out = [], re = /(\*\*[^*\n]+\*\*|~~[^~\n]+~~|`[^`\n]+`|\*[^*\n]+\*|_[^_\n]+_)/g; let last = 0, m;
   const add = (tag, txt) => { const e = document.createElement(tag); e.textContent = txt; out.push(e); };
   while ((m = re.exec(t))){ if (m.index > last) out.push(t.slice(last, m.index)); const x = m[0];
@@ -143,7 +134,7 @@ function bioNodes(t){ /* tiny, safe subset of Discord markdown: **bold** ~~strik
 let bioKey = "";
 function renderBio(){
   const el = $("#bio"), t = bioText(); el.hidden = !t; if (t === bioKey) return; bioKey = t;
-  el.replaceChildren(...(t ? bioNodes(t) : [])); /* line breaks are kept by CSS (white-space: pre-line) */
+  el.replaceChildren(...(t ? bioNodes(t) : []));
 }
 function renderBadges(){
   const list = (prof && Array.isArray(prof.badges) ? prof.badges : []).filter(k => T["b_" + k]), ul = $("#badges");
@@ -161,22 +152,19 @@ function renderPresence(){
   const cs = acts.find(a => a.type === 4), csTxt = cs ? [(cs.emoji && !cs.emoji.id && cs.emoji.name) || "", cs.state || ""].filter(Boolean).join(" ") : "";
   setText($("#custom"), csTxt); $("#custom").hidden = !csTxt;
   const act = acts.find(a => a.type !== 4 && a.id !== "spotify:1" && a.name !== "Spotify");
-  const song = currentSong();   /* Spotify has its own block below, but this line must not claim "no activity" while music is playing */
-  const iconOnly = !!(d && !act && song);   /* only music: small mono Spotify logo + rhythm bars instead of words */
+  const song = currentSong();
+  const iconOnly = !!(d && !act && song);
   setText($("#activity"), iconOnly ? "" : !d ? (conn === "unavailable" ? tr("hint") : "") : act ? act.name + (act.details ? " — " + act.details : "") : tr("noActivity"));
   $("#activity").style.display = iconOnly ? "none" : ""; $("#act-sp").hidden = !iconOnly;
-  /* avatar: official profile (animated if it is) -> Lanyard's avatar hash; decoration only when Discord reports one */
   const lanyardAv = d && u.id && u.avatar ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=128` : "";
   const av = $("#av"), src = safeUrl(prof && (still ? prof.avatarStatic : prof.avatar)) || lanyardAv;
   if (src && src !== avBad){ if (av.getAttribute("src") !== src) av.src = src; av.hidden = false; $("#av-fb").hidden = true; } else { av.hidden = true; $("#av-fb").hidden = false; }
-  if (src && src !== avBad) setFavicon(prof && prof.avatarStatic ? safeUrl(prof.avatarStatic) || src : src);   /* the tab icon is your Discord avatar (a still image, never animated) */
+  if (src && src !== avBad) setFavicon(prof && prof.avatarStatic ? safeUrl(prof.avatarStatic) || src : src);
   const dec = safeUrl((prof && prof.decoration) || (u.avatar_decoration_data && u.avatar_decoration_data.asset ? `https://cdn.discordapp.com/avatar-decoration-presets/${u.avatar_decoration_data.asset}.png?size=160&passthrough=true` : "")), de = $("#av-deco");
   if (dec){ if (de.getAttribute("src") !== dec) de.src = dec; de.hidden = false; } else de.hidden = true;
   renderBanner(); renderBio(); renderBadges(); renderSpotify();
 }
-/* ===== Spotify activity (from Discord): loading | playing | idle (nothing detected) | error. No data = no song shown. ===== */
 let lastSpId = null;
-/* the song playing now: Discord/Lanyard first, otherwise the one /api/recent reports (Last.fm) if it is recent */
 function currentSong(){ return spotifyOf(pres) || (apiNow && Date.now() - apiNowAt < 90000 ? apiNow : null); }
 function renderSpotify(){
   const t = currentSong(), s = t ? "playing" : !pres ? (conn === "unavailable" ? "error" : "loading") : "idle", live = s === "playing", box = $("#spotify"), song = $("#sp-song"), img = $("#sp-art");
@@ -185,29 +173,27 @@ function renderSpotify(){
   setText(song, live ? t.title : ""); if (live && t.url) song.href = t.url; else song.removeAttribute("href");
   setText($("#sp-artist"), live ? t.artists : ""); setText($("#sp-album"), live ? t.album : "");
   const art = live && t.cover; img.style.display = art ? "" : "none"; if (art && img.getAttribute("src") !== art) img.src = art;
-  const sid = live ? (t.id || t.title) : null; if (sid && sid !== lastSpId){ setTimeout(loadHistory, 2500); } lastSpId = sid; /* a new song: the server records it, refresh the carousel soon */
-  clearInterval(spT); const pr = $(".sp-prog"), dur = live ? t.endMs - t.startMs : 0, ok = live && t.startMs > 0 && dur > 0; pr.hidden = !ok; if (!ok) return; /* progress only when Discord gives both timestamps */
+  const sid = live ? (t.id || t.title) : null; if (sid && sid !== lastSpId){ setTimeout(loadHistory, 2500); } lastSpId = sid;
+  clearInterval(spT); const pr = $(".sp-prog"), dur = live ? t.endMs - t.startMs : 0, ok = live && t.startMs > 0 && dur > 0; pr.hidden = !ok; if (!ok) return;
   const upd = () => { const el = Math.min(Math.max(Date.now() - t.startMs, 0), dur);
     $("#sp-cur").textContent = fmt(el / 1000); $("#sp-dur").textContent = fmt(dur / 1000); $("#sp-bar").style.transform = `scaleX(${el / dur})`; if (el >= dur) clearInterval(spT); };
   upd(); spT = setInterval(upd, 1000);
 }
-/* public profile (banner, accent colour, badges, decoration, bio): refreshed every 1 minute while the tab is visible (every 5 min when hidden) */
 async function loadProfile(){
   clearTimeout(profT); if (stopped) return;
   const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 10000); let next = 60000;
   try { const r = await fetch("/api/profile", { signal: ctl.signal, headers: { Accept: "application/json" } }); if (!r.ok) throw 0; const j = await r.json(); if (!j || !j.id) throw 0; prof = j; profFails = 0; renderPresence(); }
-  catch(e){ profFails++; next = Math.min(60000, 15000 * Math.pow(2, profFails)); } /* on failure the last good profile stays */
+  catch(e){ profFails++; next = Math.min(60000, 15000 * Math.pow(2, profFails)); }
   finally { clearTimeout(to); profT = setTimeout(loadProfile, document.hidden ? 300000 : next); }
 }
 let ws, hb, rt, wt, tries = 0, everLive = false, stopped = false;
 function connect(){
   if (!CONFIG.discordUserId || stopped || (ws && ws.readyState < 2)) return;
   clearTimeout(rt); clearTimeout(wt);
-  if (everLive) conn = "reconnecting"; else if (!tries) conn = "connecting"; /* after a failure keep "unavailable" instead of flashing "connecting" */
+  if (everLive) conn = "reconnecting"; else if (!tries) conn = "connecting";
   renderPresence();
   let s;
   try { s = ws = new WebSocket("wss://api.lanyard.rest/socket"); } catch(e){ return retry(); }
-  /* no presence within 10 s (stuck handshake, or ID not monitored by Lanyard) -> say so instead of loading forever */
   wt = setTimeout(() => { if (conn !== "live"){ conn = pres ? "reconnecting" : "unavailable"; renderPresence(); } }, 10000);
   s.onmessage = e => { if (s !== ws) return; let m; try { m = JSON.parse(e.data); } catch(_){ return; }
     if (m.op === 1){ clearInterval(hb); hb = setInterval(() => s.readyState === 1 && s.send('{"op":3}'), m.d.heartbeat_interval);
@@ -226,8 +212,7 @@ $("#av").onerror = e => { avBad = e.target.getAttribute("src"); e.target.hidden 
 
 const fmt = n => isFinite(n) ? Math.floor(n / 60) + ":" + String(Math.floor(n % 60)).padStart(2, "0") : "0:00";
 
-/* ===== Theme, language, letter ===== */
-let ttT; /* one shared timer: rapid clicks reset it instead of stacking */
+let ttT;
 $("#theme").onclick = () => { const h = document.documentElement, n = h.dataset.theme === "dark" ? "light" : "dark";
   clearTimeout(ttT); h.classList.add("tt"); h.dataset.theme = n; ttT = setTimeout(() => h.classList.remove("tt"), 280);
   try { localStorage.setItem("theme", n); } catch(e){} metaTheme(); };
@@ -252,19 +237,17 @@ document.addEventListener("pointerdown", e => { if (!lw.contains(e.target)) clos
 lm.addEventListener("focusout", e => { if (!lw.contains(e.relatedTarget)) closeLang(false); });
 function applyLang(){
   syncLang(); applyStaticText();
-  $("#l-body").textContent = CONFIG.dedicationMessage || tr("dedication");   /* re-rendered on every language change */
+  $("#l-body").textContent = CONFIG.dedicationMessage || tr("dedication");
   renderPresence(); renderHistoryState();
 }
 const dlg = $("#letter");
 $("#secret").onclick = e => { const b = e.currentTarget; b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); dlg.showModal(); vidPlay(); }; $("#close").onclick = () => dlg.close();
 dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
-/* the dedication media is a looping, muted video (behaves like a GIF). If assets/dedication.mp4 is missing the area disappears and the text stays centred */
-const vid = $("#l-vid") || document.createElement("video");   /* if the element is ever missing, the rest of the page (Discord, Spotify, history) must still run */
+const vid = $("#l-vid") || document.createElement("video");
 vid.onerror = () => dlg.classList.add("no-gif"); vid.onloadeddata = () => dlg.classList.remove("no-gif");
 const vidPlay = () => { try { const p = vid.play && vid.play(); if (p && p.catch) p.catch(() => {}); } catch(e){} }, vidStop = () => { try { vid.pause && vid.pause(); } catch(e){} };
 dlg.addEventListener("close", vidStop);
 
-/* ===== Stars & motion ===== */
 const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const layers = [{n:34,s:[1,1.5],k:.015,d:160},{n:22,s:[1.5,2.2],k:.04,d:110},{n:9,s:[2.4,3.4],k:.09,d:80}].map(L => {
   const l = document.createElement("div"), d = document.createElement("div"); l.className = "sl"; d.className = "sd"; d.style.setProperty("--dd", L.d + "s"); l.appendChild(d);
@@ -282,12 +265,8 @@ if (!still){ addEventListener("scroll", req, {passive:true});
 if (still) document.querySelectorAll("animateMotion").forEach(a => a.remove());
 document.addEventListener("visibilitychange", () => { const h = document.hidden; document.documentElement.classList.toggle("paused", h); document.querySelectorAll("svg").forEach(v => h ? v.pauseAnimations() : v.unpauseAnimations()); });
 try { localStorage.setItem("seen", "1"); } catch(e){}
-/* ===== Recently played carousel: GET /api/recent (the server records new songs from Discord and returns the stored last 10).
-   States: loading -> ok | empty | error. Real data only: never invented tracks ===== */
 const hist = $("#hist"), histSec = $("#history"), histMsg = $("#hist-msg"), dots = $("#car-dots"), cPrev = $("#car-prev"), cNext = $("#car-next"); let histKey = "", histState = "loading", histBusy = false, cur = 0;
 const cards = () => [...hist.children];
-/* Coverflow: the active song is big in the centre; its neighbours overlap on both sides and shrink; it loops (after the 10th comes the 1st).
-   data-o = distance from the centre (-3..3, shortest way round); CSS does the rest. */
 function carState(){
   const c = cards(), n = c.length; if (!n){ cPrev.disabled = cNext.disabled = true; return; }
   cur = ((cur % n) + n) % n;
@@ -300,7 +279,6 @@ function goTo(i){ if (!cards().length) return; cur = i; carState(); }
 function page(dir){ goTo(cur + dir); }
 cPrev.onclick = () => page(-1); cNext.onclick = () => page(1);
 hist.addEventListener("keydown", e => { if (e.key === "ArrowRight"){ e.preventDefault(); page(1); } else if (e.key === "ArrowLeft"){ e.preventDefault(); page(-1); } });
-/* swipe / drag on the stage; a click on a side cover brings it to the centre, a click on the centre cover opens it in Spotify */
 let px = null, dragged = false;
 hist.addEventListener("pointerdown", e => { px = e.clientX; dragged = false; });
 hist.addEventListener("pointercancel", () => { px = null; });
@@ -315,7 +293,6 @@ function renderHistoryState(){
   histMsg.textContent = m; histMsg.hidden = !m; hist.hidden = histState !== "ok"; dots.hidden = histState !== "ok" || cards().length < 2; histSec.hidden = false; histSec.dataset.s = histState;
   $("#car-prev").parentNode.hidden = histState !== "ok"; carState();
 }
-/* one record of the collection: big cover, then title / artists / duration · album. The time of the play is deliberately not shown. */
 function histCard(i){
   const li = document.createElement("li"), a = document.createElement("a"), cv = document.createElement("div"), t = document.createElement("strong"), r = document.createElement("span"), m = document.createElement("span");
   if (i.url){ a.href = i.url; a.target = "_blank"; a.rel = "noopener"; a.setAttribute("data-i18n-title", "openSpotify"); a.title = tr("openSpotify"); }
@@ -330,7 +307,7 @@ function histCard(i){
 }
 function renderHistory(items){
   histState = items.length ? "ok" : "empty";
-  const key = items.map(i => i.id + "@" + (i.playedAt || "")).join(","); /* same track played twice = two plays */
+  const key = items.map(i => i.id + "@" + (i.playedAt || "")).join(",");
   if (key !== histKey){ histKey = key;
     hist.replaceChildren(...items.map(histCard));
     dots.replaceChildren(...items.map((_, k) => { const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", tr("song") + " " + (k + 1)); b.onclick = () => goTo(k); return b; }));
@@ -343,10 +320,9 @@ async function loadHistory(){ if (document.hidden || histBusy) return; histBusy 
     if (!j || !Array.isArray(j.items)) throw 0;
     renderHistory(j.items.filter(i => i && i.title && (!i.url || /^https:\/\/open\.spotify\.com\//.test(i.url))).slice(0, 10));
     const n = j.now; apiNow = n && typeof n === "object" && n.title && (!n.url || /^https:\/\/open\.spotify\.com\//.test(n.url)) ? { id: "", title: String(n.title), artists: String(n.artists || ""), album: String(n.album || ""), cover: /^https:\/\//.test(n.cover || "") ? n.cover : "", url: n.url || "", startMs: 0, endMs: 0 } : null; apiNowAt = Date.now(); renderPresence();
-  } catch(e){ if (histState !== "ok"){ histState = "error"; renderHistoryState(); } /* a transient failure keeps the last good carousel */ }
+  } catch(e){ if (histState !== "ok"){ histState = "error"; renderHistoryState(); }  }
   finally { clearTimeout(to); histBusy = false; } }
 document.addEventListener("visibilitychange", () => { if (!document.hidden){ if (histState !== "ok") loadHistory(); else startHistory(); loadProfile(); } });
-/* polling: the server only records while somebody (or the optional scheduler) calls it; /api/recent is CDN-cached 8 s, so many visitors cost almost nothing */
 const startHistory = () => { clearInterval(histT); loadHistory(); histT = setInterval(loadHistory, 15000); };
 renderHistoryState(); startHistory(); loadProfile();
-[metaTheme, applyLang, connect].forEach(f => { try { f(); } catch(e){ console.error(e); } }); /* one failing step must not stop the others */
+[metaTheme, applyLang, connect].forEach(f => { try { f(); } catch(e){ console.error(e); } });

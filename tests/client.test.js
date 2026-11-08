@@ -1,6 +1,3 @@
-/* Offline test of script.js against a tiny fake DOM, a fake Lanyard WebSocket and mocked /api/* responses. It exercises the real browser code paths
-   (Discord presence, banner, badges, Spotify-from-Discord, carousel, languages, favicon) but it is NOT a real browser:
-   layout and CSS rendering are not tested. Run: node tests/client.test.js */
 "use strict";
 const fs = require("fs"), path = require("path"), vm = require("vm"), assert = require("assert");
 const root = path.join(__dirname, ".."), code = fs.readFileSync(path.join(root, "script.js"), "utf8"), html = fs.readFileSync(path.join(root, "index.html"), "utf8");
@@ -195,7 +192,7 @@ test("no request while the tab is hidden; one immediate refresh when it becomes 
 });
 test("languages: every text has 5 non-empty translations; ALL original translations are unchanged; new texts exist in en/es/ru/de/fr", () => {
   const grab = src => { const m = src.match(/const T = (\{[\s\S]*?\n\});/); return vm.runInNewContext("(" + m[1] + ")"); };
-  const T = grab(code), O = JSON.parse(fs.readFileSync(path.join(__dirname, "original-translations.json"), "utf8")); /* snapshot of the translations before this work */
+  const T = grab(code), O = JSON.parse(fs.readFileSync(path.join(__dirname, "original-translations.json"), "utf8"));
   for (const k of Object.keys(O)) assert.deepEqual(T[k], O[k], "original translation changed: " + k);
   for (const [k, v] of Object.entries(T)) { assert.equal(v.length, 5, k); v.forEach(x => assert(typeof x === "string" && x.trim(), k + " empty")); }
   for (const k of ["prev", "next", "song", "duration", "badges", "history", "historyEmpty", "historyError", "nothingPlaying", "listening", "openSpotify", "loading", "online", "idle", "dnd", "offline", "noActivity"]) assert(T[k], "missing " + k);

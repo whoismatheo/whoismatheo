@@ -1,6 +1,3 @@
-/* GET /api/track   (optional, for an external scheduler)  Records the current Spotify activity even when nobody is visiting the site.
-   Protected: needs the header  Authorization: Bearer <TRACK_SECRET>  (Vercel Cron sends CRON_SECRET the same way).
-   Without either variable configured the route answers 404. Never cached. */
 const crypto = require("crypto");
 const { sendJson, allowGet, sendError } = require("./_lib/http");
 const { sync } = require("./_lib/sync");

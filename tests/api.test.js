@@ -1,6 +1,3 @@
-/* Offline tests for the Vercel functions. Lanyard (Discord), Discord's API and Upstash Redis are SIMULATED (fetch is mocked, the Redis
-   fake is an in-memory map): they prove the logic, persistence behaviour, security and error handling, NOT that your real accounts work.
-   Run: node tests/api.test.js   (Node 18+, no dependencies) */
 "use strict";
 const assert = require("assert"), fs = require("fs"), path = require("path");
 const root = path.join(__dirname, "..");
@@ -8,7 +5,7 @@ const ID = "1356268956398387423";
 const REDIS = { UPSTASH_REDIS_REST_URL: "https://fake-redis.upstash.io", UPSTASH_REDIS_REST_TOKEN: "REDIS_TOKEN_secret" };
 const ENVKEYS = ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN", "KV_REST_API_URL", "KV_REST_API_TOKEN", "DISCORD_USER_ID", "DISCORD_BOT_TOKEN", "TRACK_SECRET", "CRON_SECRET"];
 
-function load(name, env) {                      /* fresh module instances = a "restarted" serverless environment */
+function load(name, env) {
   for (const k of Object.keys(require.cache)) if (k.startsWith(path.join(root, "api"))) delete require.cache[k];
   for (const k of ENVKEYS) delete process.env[k];
   Object.assign(process.env, env || {});
@@ -20,8 +17,7 @@ function call(handler, { method = "GET", headers = {} } = {}) {
     Promise.resolve(handler({ method, headers }, res)).catch(e => resolve({ status: 500, headers: {}, body: "THROW " + e.stack })); });
 }
 
-/* ---- fakes ---- */
-const db = { data: new Map(), fail: false };     /* the "Upstash database" survives module reloads, like the real one survives restarts */
+const db = { data: new Map(), fail: false };
 const sp = (id, song, extra) => Object.assign({ track_id: id, song, artist: "Artist A; Artist B", album: "Alb", album_art_url: "https://i.scdn.co/image/" + id, timestamps: { start: 1_000_000, end: 1_200_000 } }, extra);
 const lan = { mode: "none", spotify: null, user: { id: ID, username: "matheo", global_name: "Matheo", avatar: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", public_flags: 0 }, status: 200 };
 const calls = [];
@@ -58,13 +54,12 @@ const ids = r => r.json.items.map(i => i.id);
 
 let tests = []; const test = (n, f) => tests.push([n, f]);
 
-/* ===== recent: recording ===== */
 test("recent: storage not configured -> 503 storage_not_configured (no ephemeral fallback)", async () => { reset(); const r = await recent({}); assert.equal(r.status, 503); assert.deepEqual(r.json, { error: "storage_not_configured" }); });
 test("recent: nothing playing -> 200 with an empty list (nothing invented)", async () => { reset(); const r = await recent(); assert.equal(r.status, 200); assert.deepEqual(r.json.items, []); });
 test("recent: new song is recorded with title, artists, album, cover, Spotify link built from the track id (no Spotify API call)", async () => {
   reset(); const r = await play("0VjIjW4GlUZAMYd2vXMi3b", "Blinding Lights"); const i = r.json.items[0];
   assert.equal(r.status, 200); assert.equal(r.json.items.length, 1);
-  assert.deepEqual(Object.keys(i).sort(), ["album", "artists", "cover", "durationMs", "id", "playedAt", "title", "url"]);   /* internal fields (raw timestamps) are not leaked */
+  assert.deepEqual(Object.keys(i).sort(), ["album", "artists", "cover", "durationMs", "id", "playedAt", "title", "url"]);
   assert.equal(i.durationMs, 200000, "track length = Discord end - start");
   assert.equal(i.title, "Blinding Lights"); assert.equal(i.artists, "Artist A, Artist B"); assert.equal(i.album, "Alb"); assert.equal(i.cover, "https://i.scdn.co/image/0VjIjW4GlUZAMYd2vXMi3b");
   assert.equal(i.url, "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b"); assert(!isNaN(new Date(i.playedAt)));
@@ -78,7 +73,6 @@ test("recent: records the song from the raw Discord activity when Lanyard's pars
   lan.raw = { activities: [{ type: 0, name: "Spotify", details: "game" }, { type: 2, name: "YouTube Music", details: "nope" }], listening_to_spotify: false, spotify: null }; r = await recent(); assert.equal(r.json.items.length, 1, "look-alikes are not recorded");
   lan.raw = null;
 });
-/* ===== optional second source: Last.fm ===== */
 const LF = Object.assign({ LASTFM_API_KEY: "a".repeat(32), LASTFM_USER: "matheo_fm" }, REDIS);
 const lfTrack = (o) => Object.assign({ name: "Pilé", artist: { name: "Mauvais djo", mbid: "" }, album: { "#text": "L'Undertaker" }, url: "https://www.last.fm/music/x", image: [{ size: "small", "#text": "https://lastfm.freetls.fastly.net/i/u/34s/abc.jpg" }, { size: "extralarge", "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/abc.jpg" }], "@attr": { nowplaying: "true" } }, o);
 const lfSet = (track, dur) => { lan.lf = { recent: { recenttracks: { track: [track] } }, info: { track: { duration: String(dur === undefined ? 156000 : dur) } } }; };
@@ -149,7 +143,7 @@ test("recent: entries are kept while no music is detected", async () => { reset(
 test("recent: PERSISTENCE - history survives a restart of the environment (fresh modules, same database)", async () => {
   reset(); await play("A".repeat(22), "A"); await play("B".repeat(22), "B"); lan.spotify = null;
   const r = await recent(); assert.deepEqual(ids(r), ["B".repeat(22), "A".repeat(22)]);
-  assert(db.data.has("whoismatheo:recent-plays")); /* lives in Redis, not in local files */
+  assert(db.data.has("whoismatheo:recent-plays"));
   assert(!fs.existsSync(path.join(root, "api", "_lib", "history.json")));
 });
 test("recent: legacy KV_REST_API_* variable names work too", async () => { reset(); const r = await recent({ KV_REST_API_URL: REDIS.UPSTASH_REDIS_REST_URL, KV_REST_API_TOKEN: REDIS.UPSTASH_REDIS_REST_TOKEN }); assert.equal(r.status, 200); });
@@ -174,7 +168,6 @@ test("recent: only GET/HEAD; headers are safe; visitors cannot write", async () 
   assert.equal(db.data.size, 0, "rejected methods wrote nothing");
 });
 
-/* ===== track (optional scheduler endpoint) ===== */
 test("track: 404 when no secret is configured; 401 without/with a wrong secret; 200 with the right one and it records", async () => {
   reset(); lan.spotify = sp("E".repeat(22), "E"); const SECRET = "s".repeat(24);
   assert.equal((await call(load("track.js", REDIS))).status, 404);
@@ -189,7 +182,6 @@ test("track: a short secret is ignored (cannot be configured insecurely); CRON_S
   const C = "c".repeat(20); assert.equal((await call(load("track.js", Object.assign({ CRON_SECRET: C }, REDIS)), { headers: { authorization: "Bearer " + C } })).status, 200);
 });
 
-/* ===== profile ===== */
 const prof = async (env) => { const r = await call(load("profile.js", env || {})); return Object.assign(r, { json: JSON.parse(r.body) }); };
 test("profile: without a bot token -> avatar/name/badges from Lanyard, banner null (not invented), bannerSource=no_token, no bio field", async () => {
   reset(); lan.user.public_flags = (1 << 6) | (1 << 22); const r = await prof(); assert.equal(r.status, 200);
@@ -224,7 +216,6 @@ test("profile: bio only comes from the owner's own Lanyard KV key 'bio' (trimmed
   withKv({ bio: 42 }); r = await prof(); assert.equal(r.json.bio, ""); withKv({}); r = await prof(); assert.equal(r.json.bio, ""); install();
 });
 
-/* ===== pure logic ===== */
 test("history logic: applyTrack unit cases", () => {
   const { applyTrack } = require(path.join(root, "api/_lib/history.js")), t = (id, s = 0, e = 0) => ({ id, title: id, artists: "", album: "", cover: "", url: "", startMs: s, endMs: e });
   assert.deepEqual(applyTrack([], null, "x"), { items: [], added: false }); let r = applyTrack([], t("a"), "1"); assert.equal(r.added, true);
@@ -232,7 +223,6 @@ test("history logic: applyTrack unit cases", () => {
   let l = []; for (let n = 0; n < 25; n++) l = applyTrack(l, t("t" + n), "x").items; assert.equal(l.length, 10);
 });
 
-/* ===== removal of the old Spotify API integration ===== */
 test("cleanup: no Spotify Web API / OAuth code or variables remain in api/, script.js or config", () => {
   const files = []; (function walk(d) { for (const f of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, f.name); f.isDirectory() ? walk(p) : files.push(p); } })(path.join(root, "api"));
   files.push(path.join(root, "script.js"), path.join(root, ".env.example"), path.join(root, "vercel.json"));

@@ -1,14 +1,11 @@
-/* Reads the SAME data source the website already uses in the browser: Lanyard (https://github.com/Phineas/lanyard),
-   which mirrors your Discord presence, including the "listening to Spotify" activity (also from Discord on Android).
-   Server side we use its public REST twin of the WebSocket. No Spotify API, no OAuth, no tokens, no user credentials. */
 "use strict";
 const { timeout, fail } = require("./http");
 
 const BASE = "https://api.lanyard.rest/v1/users/";
 const ID_RE = /^\d{15,25}$/;
-const DEFAULT_ID = "1356268956398387423"; /* your public Discord ID (same as CONFIG.discordUserId in script.js); DISCORD_USER_ID overrides it */
+const DEFAULT_ID = "1356268956398387423";
 const discordId = () => process.env.DISCORD_USER_ID || DEFAULT_ID;
-const TRACK_RE = /^[A-Za-z0-9]{22}$/;   /* a Spotify track id; anything else (local file, podcast) gets no link */
+const TRACK_RE = /^[A-Za-z0-9]{22}$/;
 
 async function fetchPresence(userId) {
   if (!ID_RE.test(String(userId || ""))) throw fail(503, "not_configured", "invalid or missing DISCORD_USER_ID");
@@ -22,8 +19,7 @@ async function fetchPresence(userId) {
   return j.data;
 }
 
-/* The Spotify activity exactly as Discord reports it, or null. Nothing is invented: missing fields stay empty. */
-function spotifyActivity(data) {   /* fallback: the raw Discord activity (type 2 "Spotify") when Lanyard's parsed `spotify` object is missing */
+function spotifyActivity(data) {
   const a = data && Array.isArray(data.activities) ? data.activities.find(x => x && x.type === 2 && (x.id === "spotify:1" || x.name === "Spotify")) : null;
   if (!a || !a.details) return null;
   const img = String((a.assets && a.assets.large_image) || "").replace(/^spotify:/, "");

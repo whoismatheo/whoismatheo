@@ -1,7 +1,3 @@
-/* Public Discord badges that are derivable from `public_flags`, a documented field of the User object
-   (https://discord.com/developers/docs/resources/user#user-object-user-flags). Only flags that are actually set are returned.
-   Badges that Discord does not put in public_flags (Nitro, server boosting, Quests, Orb, Legacy username...) are NOT available
-   to any official API, so they are never shown or guessed. */
 "use strict";
 const FLAGS = [
   [1 << 0, "staff"], [1 << 1, "partner"], [1 << 2, "hypesquadEvents"], [1 << 3, "bugHunter1"],
