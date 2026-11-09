@@ -133,25 +133,28 @@ test("recent: cleanup - duplicates already stored by older versions are merged (
   db.data.set("whoismatheo:recent-plays", JSON.stringify([e(A, 1_200_000, 1_400_000), e(A, 1_000_000, 1_200_000)]));
   r = await recent(); assert.deepEqual(ids(r), [A, A], "a repeat that began exactly when the previous play ended is real");
 });
-test("minecraft: real profile for sxhq (uuid, skin model, equipped cape as data uris); nothing invented when upstream fails or no server is configured", async () => {
+test("minecraft: real profile for sxhq (uuid, skin model, equipped + owned pan/common capes as data uris, fixed favorite server)", async () => {
   const prev = global.fetch, png = Buffer.from("89504e470d0a1a0a", "hex"), id = "0123456789abcdef0123456789abcdef";
-  const tex = Buffer.from(JSON.stringify({ textures: { SKIN: { url: "http://textures.minecraft.net/texture/skin1", metadata: { model: "slim" } }, CAPE: { url: "http://textures.minecraft.net/texture/cape1" } } })).toString("base64");
-  const seen = []; let down = false;
+  const PAN = "28de4a81688ad18b49e735a273e086c18f1e3966956123ccb574034c06f5d336", COMMON = "5ec930cdd2629c8771655c60eebeb867b4b6559b0e6d3bc71c40c96347fa03f0";
+  const mk = cape => Buffer.from(JSON.stringify({ textures: { SKIN: { url: "http://textures.minecraft.net/texture/skin1", metadata: { model: "slim" } }, ...(cape ? { CAPE: { url: "http://textures.minecraft.net/texture/" + cape } } : {}) } })).toString("base64");
+  const seen = []; let down = false, tex = mk("cape1"), missing = null;
   global.fetch = async url => { seen.push(url); if (down) return { ok: false, status: 503, json: async () => ({}) };
     if (url.includes("lookup/name/sxhq")) return { ok: true, json: async () => ({ id, name: "sxhq" }) };
     if (url.includes("sessionserver")) return { ok: true, json: async () => ({ name: "sxhq", properties: [{ name: "textures", value: tex }] }) };
-    if (url.startsWith("https://textures.minecraft.net/")) return { ok: true, arrayBuffer: async () => png };
+    if (url.startsWith("https://textures.minecraft.net/")) return missing && url.endsWith(missing) ? { ok: false, status: 404 } : { ok: true, arrayBuffer: async () => png };
     return { ok: false, status: 404, json: async () => ({}) }; };
   try {
     let r = await call(load("minecraft.js", {})); const j = JSON.parse(r.body);
     assert.equal(r.status, 200); assert.equal(j.name, "sxhq"); assert.equal(j.uuid, "01234567-89ab-cdef-0123-456789abcdef"); assert.equal(j.edition, "java");
-    assert.equal(j.skin.model, "slim"); assert(j.skin.data.startsWith("data:image/png;base64,")); assert.equal(j.capes.length, 1); assert(j.capes[0].data.startsWith("data:image/png;base64,"));
-    assert.equal(j.server, null, "no server invented"); assert(/s-maxage=600/.test(r.headers["cache-control"]));
+    assert.equal(j.skin.model, "slim"); assert(j.skin.data.startsWith("data:image/png;base64,"));
+    assert.deepEqual(j.capes.map(c => c.id), ["cape1", PAN, COMMON]); assert.deepEqual(j.capes.map(c => c.active), [true, false, false]); assert(j.capes.every(c => c.data.startsWith("data:image/png;base64,")));
+    assert.deepEqual([j.server.name, j.server.address, j.server.icon, j.server.source], ["Miami Practice", "miamiprac.com", "https://api.mcsrvstat.us/icon/miamiprac.com", "favorite"]);
+    assert(/s-maxage=600/.test(r.headers["cache-control"]));
     assert(seen.every(u => /^https:\/\/(api\.minecraftservices\.com|sessionserver\.mojang\.com|textures\.minecraft\.net)\//.test(u)));
-    r = await call(load("minecraft.js", { MC_SERVER_NAME: "Example", MC_SERVER_ADDRESS: "play.example.net", MC_SERVER_DATE: "2026-11-01" })); const s2 = JSON.parse(r.body).server;
-    assert.deepEqual([s2.name, s2.address, s2.seen, s2.source], ["Example", "play.example.net", "2026-11-01", "manual"]);
-    r = await call(load("minecraft.js", { MC_SERVER_ADDRESS: "bad host/../x" })); assert.equal(JSON.parse(r.body).server, null, "invalid address ignored");
-    down = true; r = await call(load("minecraft.js", {})); assert.equal(r.status, 503); assert.deepEqual(JSON.parse(r.body), { error: "unavailable" });
+    tex = mk(PAN); missing = COMMON;
+    r = await call(load("minecraft.js", {})); const k = JSON.parse(r.body);
+    assert.deepEqual(k.capes.map(c => c.id), [PAN]); assert.equal(k.capes[0].active, true, "equipped owned cape is marked active, deduplicated, and a failing texture is dropped");
+down = true; r = await call(load("minecraft.js", {})); assert.equal(r.status, 503); assert.deepEqual(JSON.parse(r.body), { error: "unavailable" });
   } finally { global.fetch = prev; }
 });
 test("recent: never more than 10 entries; the oldest drops out; order newest -> oldest", async () => {

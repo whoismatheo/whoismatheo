@@ -2,7 +2,6 @@ const { sendJson, allowGet } = require("./_lib/http");
 
 const NAME = "sxhq";
 const TEX = /^https?:\/\/textures\.minecraft\.net\//;
-const HOST = /^[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:\d{1,5})?$/i;
 let memo = null;
 
 const getJson = async url => {
@@ -17,12 +16,11 @@ const dataUri = async url => {
 };
 const dashed = h => h.replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, "$1-$2-$3-$4-$5");
 
-const serverRecord = () => {
-  const address = (process.env.MC_SERVER_ADDRESS || "").trim(), name = (process.env.MC_SERVER_NAME || "").trim(), seen = (process.env.MC_SERVER_DATE || "").trim();
-  if (!name && !address) return null;
-  if (address && !HOST.test(address)) return null;
-  return { name: name || address, address: address || null, seen: /^\d{4}-\d{2}-\d{2}/.test(seen) ? seen : null, icon: address ? "https://api.mcsrvstat.us/icon/" + address : null, source: "manual" };
-};
+const FAVORITE = { name: "Miami Practice", address: "miamiprac.com", icon: "https://api.mcsrvstat.us/icon/miamiprac.com" };
+const OWNED = [
+  { id: "28de4a81688ad18b49e735a273e086c18f1e3966956123ccb574034c06f5d336", label: "pan" },
+  { id: "5ec930cdd2629c8771655c60eebeb867b4b6559b0e6d3bc71c40c96347fa03f0", label: "common" }
+];
 
 async function profile() {
   if (memo && Date.now() - memo.t < 600000) return memo.v;
@@ -34,12 +32,14 @@ async function profile() {
   const tex = prop ? (JSON.parse(Buffer.from(prop.value, "base64").toString("utf8")).textures || {}) : {};
   const skin = tex.SKIN && TEX.test(tex.SKIN.url) ? tex.SKIN : null;
   const cape = tex.CAPE && TEX.test(tex.CAPE.url) ? tex.CAPE : null;
-  const [skinData, capeData] = await Promise.all([skin ? dataUri(skin.url) : null, cape ? dataUri(cape.url) : null]);
+  const equipped = cape ? cape.url.split("/").pop() : null;
+  const ids = [...(equipped && !OWNED.some(c => c.id === equipped) ? [{ id: equipped, label: "equipped" }] : []), ...OWNED];
+  const [skinData, ...capeData] = await Promise.all([skin ? dataUri(skin.url) : null, ...ids.map(c => dataUri("https://textures.minecraft.net/texture/" + c.id).catch(() => null))]);
   const v = {
     name: s.name || p.name, uuid: dashed(p.id), edition: "java",
     skin: skin ? { data: skinData, model: skin.metadata && skin.metadata.model === "slim" ? "slim" : "default" } : null,
-    capes: cape ? [{ id: cape.url.split("/").pop(), data: capeData, active: true }] : [],
-    server: serverRecord()
+    capes: ids.map((c, i) => ({ id: c.id, label: c.label, data: capeData[i], active: c.id === equipped })).filter(c => c.data),
+    server: { ...FAVORITE, source: "favorite" }
   };
   memo = { t: Date.now(), v };
   return v;

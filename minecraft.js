@@ -51,20 +51,19 @@
     };
     const none = mk("no cape", null, () => viewer && viewer.resetCape());
     const faces = await Promise.all(d.capes.map(c => face(c.data)));
-    const made = d.capes.map((c, i) => mk("official cape" + (c.active ? " (equipped)" : ""), faces[i], () => viewer && viewer.loadCape(c.data)));
+    const made = d.capes.map((c, i) => mk((c.label && c.label !== "equipped" ? c.label + " cape" : "official cape") + (c.active ? " (equipped)" : ""), faces[i], () => viewer && viewer.loadCape(c.data)));
     (made.find((_, i) => d.capes[i].active) || none).setAttribute("aria-pressed", "true");
   };
 
   const server = s => {
     const box = $("#mc-server");
     box.replaceChildren();
-    if (!s) { box.appendChild(el("p", "mc-none mono", "no verified server record")); box.appendChild(el("p", "mc-sub mono", "minecraft's public api doesn't publish this")); return; }
+    if (!s) { box.appendChild(el("p", "mc-none mono", "no favorite server set"));  return; }
     if (s.icon) { const i = el("img", "mc-icon"); i.src = s.icon; i.alt = ""; i.width = 48; i.height = 48; i.onerror = () => i.remove(); box.appendChild(i); }
     const t = el("div", "mc-srv-t");
     t.appendChild(el("strong", "", s.name));
     if (s.address) t.appendChild(el("span", "mono", s.address));
-    const when = s.seen ? new Date(s.seen).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "date unknown";
-    t.appendChild(el("span", "mc-sub mono", "last seen · " + when + " · manual record"));
+    t.appendChild(el("span", "mc-sub mono", "favorite server"));
     box.appendChild(t);
   };
 
