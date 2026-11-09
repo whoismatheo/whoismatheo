@@ -11,11 +11,11 @@
   const note = t => { const m = $("#mc-msg"); m.textContent = t; m.hidden = !t; };
 
   const load = async () => {
-    try { const c = JSON.parse(sessionStorage.getItem("mc2") || "null"); if (c && Date.now() - c.t < 6e5) return c.v; } catch (e) {}
+    try { const c = JSON.parse(sessionStorage.getItem("mc3") || "null"); if (c && Date.now() - c.t < 6e5) return c.v; } catch (e) {}
     const r = await fetch("/api/minecraft");
     if (!r.ok) throw new Error("http " + r.status);
     const v = await r.json();
-    try { sessionStorage.setItem("mc2", JSON.stringify({ t: Date.now(), v })); } catch (e) {}
+    try { sessionStorage.setItem("mc3", JSON.stringify({ t: Date.now(), v })); } catch (e) {}
     return v;
   };
   const lib = () => window.skinview3d ? Promise.resolve() : new Promise((ok, no) => { const s = el("script"); s.src = LIB; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
@@ -46,12 +46,12 @@
     const mk = (label, img, apply) => {
       const b = el("button", "mc-cape"); b.type = "button"; b.title = label; b.setAttribute("aria-label", label); b.setAttribute("aria-pressed", "false");
       if (img) { const i = el("img"); i.src = img; i.alt = ""; i.width = 10; i.height = 16; b.appendChild(i); } else b.appendChild(el("span", "mc-x", "∅"));
-      b.onclick = () => { box.querySelectorAll(".mc-cape").forEach(x => x.setAttribute("aria-pressed", String(x === b))); apply(); };
+      b.onclick = async () => { box.querySelectorAll(".mc-cape").forEach(x => x.setAttribute("aria-pressed", String(x === b))); if (!viewer) return; try { await apply(); } catch (e) {} previews(); };
       box.appendChild(b); return b;
     };
-    const none = mk("no cape", null, () => viewer && viewer.resetCape());
+    const none = mk("no cape", null, () => viewer.resetCape());
     const faces = await Promise.all(d.capes.map(c => face(c.data)));
-    const made = d.capes.map((c, i) => mk((c.label && c.label !== "equipped" ? c.label + " cape" : "official cape") + (c.active ? " (equipped)" : ""), faces[i], () => viewer && viewer.loadCape(c.data)));
+    const made = d.capes.map((c, i) => mk((c.label && c.label !== "equipped" ? c.label + " cape" : "official cape") + (c.active ? " (equipped)" : ""), faces[i], () => viewer.loadCape(c.data)));
     (made.find((_, i) => d.capes[i].active) || none).setAttribute("aria-pressed", "true");
   };
 
@@ -68,6 +68,7 @@
   };
 
   const previews = () => {
+    if (!viewer) return;
     const box = $("#mc-prev");
     box.replaceChildren();
     const keep = viewer.autoRotate, y = viewer.playerWrapper.rotation.y;
