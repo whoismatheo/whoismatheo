@@ -427,3 +427,17 @@ footer::after{content:"// whoismatheo // v1.0";position:absolute;right:1.2rem;bo
 .mc-view .btn[hidden]{display:none}
 
 @media(max-width:600px){.nav .ctrl{flex:1 0 100%;margin-left:0;display:flex;align-items:center;justify-content:space-between}}
+
+.orbit .tk{stroke-opacity:.3;stroke-width:4;stroke-dasharray:.6 14;stroke-dashoffset:0;animation:none}
+.orbit .r3{stroke-opacity:.22;stroke-dasharray:2 4;animation:none}
+.orbit .sph{fill:url(#sph);stroke:rgba(255,255,255,.18);stroke-width:.4}
+.orbit .mk{fill:none;stroke:currentColor;stroke-opacity:.5;stroke-width:.8}
+.pring{right:-7%;top:14%;width:clamp(260px,38vw,620px);aspect-ratio:1;border-radius:50%;border:2px solid rgba(235,235,240,.34);transform:rotate(-12deg) scale(1.55,.3);transform-origin:50% 50%}
+.pring.pb{z-index:-2;border-color:rgba(235,235,240,.22)}
+.pring.pf{clip-path:inset(50% 0 0 0);box-shadow:0 0 10px rgba(255,255,255,.12)}
+.orb{border-radius:50%;aspect-ratio:1;background:radial-gradient(circle at 32% 28%,#fff 0 7%,#cfcfd6 20%,#4b4b53 58%,#0b0b0d 100%);box-shadow:0 0 18px rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.12)}
+.m1{right:36%;top:63%;width:clamp(24px,3.2vw,44px)}
+.m2{left:34%;top:19%;width:12px;opacity:.7}
+.m3{right:17%;top:9%;width:clamp(16px,2vw,26px);opacity:.9}
+.torus{left:63%;top:24%;width:clamp(26px,3vw,40px);aspect-ratio:1;border-radius:50%;border:4px solid;border-color:#e4e4ea #6a6a73 #232328 #a0a0a8;transform:rotate(-12deg) scaleY(.42);box-shadow:0 0 14px rgba(255,255,255,.14)}
+@media(max-width:700px){.pring{right:-38%;top:50%;width:300px}.m1{right:42%;top:67%;width:22px}.m2{left:30%;top:20%}.m3{right:12%;top:12%;width:16px}.torus{left:auto;right:16%;top:30%;width:26px}}

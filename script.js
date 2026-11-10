@@ -9,7 +9,6 @@ const T = {
  music:["music","música","музыка","musik","musique"],
  theme:["Toggle theme","Cambiar tema","Сменить тему","Thema wechseln","Changer de thème"],
  language:["Language","Idioma","Язык","Sprache","Langue"],
- hero:["just another entity on the internet.","solo otra entidad en internet.","просто ещё одно существо в интернете.","nur ein weiteres Wesen im Internet.","juste une autre entité sur internet."],
  presence:["discord presence","presencia en discord","статус в discord","discord-präsenz","présence discord"],
  connecting:["connecting","conectando","подключение","verbinde","connexion"],
  live:["real time","tiempo real","онлайн","echtzeit","temps réel"],
@@ -70,7 +69,6 @@ const T = {
  historyError:["recent plays are unavailable right now", "las reproducciones recientes no están disponibles ahora", "недавние прослушивания сейчас недоступны", "zuletzt Gehörtes ist gerade nicht verfügbar", "les écoutes récentes sont indisponibles pour le moment"],
  openSpotify:["Open in Spotify", "Abrir en Spotify", "Открыть в Spotify", "In Spotify öffnen", "Ouvrir dans Spotify"],
  loading:["loading", "cargando", "загрузка", "lädt", "chargement"],
- footer:["somewhere on the internet","en algún lugar de internet","где-то в интернете","irgendwo im Internet","quelque part sur internet"]
 };
 const $ = s => document.querySelector(s);
 const store = { get: k => { try { return localStorage.getItem(k); } catch(e){ return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch(e){} } };

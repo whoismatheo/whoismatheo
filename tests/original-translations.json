@@ -1,317 +1,303 @@
 {
- "home": [
-  "home",
-  "inicio",
-  "главная",
-  "start",
-  "accueil"
- ],
- "about": [
-  "about me",
-  "sobre mí",
-  "обо мне",
-  "über mich",
-  "à propos"
- ],
- "music": [
-  "music",
-  "música",
-  "музыка",
-  "musik",
-  "musique"
- ],
- "theme": [
-  "Toggle theme",
-  "Cambiar tema",
-  "Сменить тему",
-  "Thema wechseln",
-  "Changer de thème"
- ],
- "language": [
-  "Language",
-  "Idioma",
-  "Язык",
-  "Sprache",
-  "Langue"
- ],
- "hero": [
-  "just another entity on the internet.",
-  "solo otra entidad en internet.",
-  "просто ещё одно существо в интернете.",
-  "nur ein weiteres Wesen im Internet.",
-  "juste une autre entité sur internet."
- ],
- "presence": [
-  "discord presence",
-  "presencia en discord",
-  "статус в discord",
-  "discord-präsenz",
-  "présence discord"
- ],
- "connecting": [
-  "connecting",
-  "conectando",
-  "подключение",
-  "verbinde",
-  "connexion"
- ],
- "live": [
-  "real time",
-  "tiempo real",
-  "онлайн",
-  "echtzeit",
-  "temps réel"
- ],
- "reconnecting": [
-  "reconnecting",
-  "reconectando",
-  "переподключение",
-  "verbinde neu",
-  "reconnexion"
- ],
- "unavailable": [
-  "unavailable",
-  "no disponible",
-  "недоступно",
-  "nicht verfügbar",
-  "indisponible"
- ],
- "notConfigured": [
-  "Discord ID not set",
-  "ID de Discord sin configurar",
-  "ID Discord не задан",
-  "Discord-ID nicht gesetzt",
-  "ID Discord non défini"
- ],
- "online": [
-  "online",
-  "en línea",
-  "в сети",
-  "online",
-  "en ligne"
- ],
- "idle": [
-  "idle",
-  "ausente",
-  "нет на месте",
-  "abwesend",
-  "inactif"
- ],
- "dnd": [
-  "do not disturb",
-  "no molestar",
-  "не беспокоить",
-  "bitte nicht stören",
-  "ne pas déranger"
- ],
- "offline": [
-  "offline",
-  "desconectado",
-  "не в сети",
-  "offline",
-  "hors ligne"
- ],
- "noActivity": [
-  "no current activity",
-  "sin actividad actual",
-  "нет активности",
-  "keine aktuelle Aktivität",
-  "aucune activité"
- ],
- "listening": [
-  "listening to spotify",
-  "escuchando spotify",
-  "слушает spotify",
-  "hört spotify",
-  "écoute spotify"
- ],
- "aboutTitle": [
-  "a bit of everything, I guess.",
-  "un poco de todo, supongo.",
-  "понемногу обо всём, наверное.",
-  "ein bisschen von allem, schätze ich.",
-  "un peu de tout, je suppose."
- ],
- "aboutP1": [
-  "I don’t always know what I’m doing, but I almost always end up finding something interesting.",
-  "No siempre sé qué estoy haciendo, pero casi siempre termino encontrando algo interesante.",
-  "Я не всегда понимаю, что делаю, но почти всегда в итоге нахожу что-нибудь интересное.",
-  "Ich weiß nicht immer, was ich gerade tue, aber fast immer finde ich am Ende etwas Interessantes.",
-  "Je ne sais pas toujours ce que je fais, mais je finis presque toujours par trouver quelque chose d’intéressant."
- ],
- "aboutP2": [
-  "I like ideas that appear out of nowhere, conversations that drag on for no reason, and those small things that make an ordinary day feel different.",
-  "Me gustan las ideas que aparecen de la nada, las conversaciones que se alargan sin motivo y esas pequeñas cosas que hacen que un día normal sea diferente.",
-  "Мне нравятся идеи, которые появляются из ниоткуда, разговоры, которые затягиваются без всякой причины, и те маленькие мелочи, которые делают обычный день особенным.",
-  "Ich mag Ideen, die aus dem Nichts auftauchen, Gespräche, die sich ohne Grund in die Länge ziehen, und diese kleinen Dinge, die einen normalen Tag anders machen.",
-  "J’aime les idées qui surgissent de nulle part, les conversations qui s’éternisent sans raison, et ces petites choses qui rendent un jour ordinaire différent."
- ],
- "aboutClose": [
-  "Under construction, like everyone else.",
-  "En construcción, como todo el mundo.",
-  "В разработке, как и все мы.",
-  "Im Aufbau, wie alle anderen auch.",
-  "En construction, comme tout le monde."
- ],
- "hint": [
-  "no presence received — join discord.gg/lanyard",
-  "sin datos de presencia — únete a discord.gg/lanyard",
-  "нет данных о статусе — вступите на discord.gg/lanyard",
-  "keine Präsenzdaten — tritt discord.gg/lanyard bei",
-  "aucune donnée de présence — rejoins discord.gg/lanyard"
- ],
- "seek": [
-  "Seek",
-  "Buscar",
-  "Перемотка",
-  "Suchen",
-  "Position"
- ],
- "play": [
-  "Play",
-  "Reproducir",
-  "Играть",
-  "Abspielen",
-  "Lecture"
- ],
- "pause": [
-  "Pause",
-  "Pausa",
-  "Пауза",
-  "Pause",
-  "Pause"
- ],
- "volume": [
-  "Volume",
-  "Volumen",
-  "Громкость",
-  "Lautstärke",
-  "Volume"
- ],
- "noTrack": [
-  "no track configured",
-  "sin canción configurada",
-  "трек не настроен",
-  "kein Titel eingestellt",
-  "aucun titre configuré"
- ],
- "playing": [
-  "playing",
-  "reproduciendo",
-  "играет",
-  "spielt",
-  "lecture"
- ],
- "paused": [
-  "paused",
-  "en pausa",
-  "пауза",
-  "pausiert",
-  "en pause"
- ],
- "tapToPlay": [
-  "tap play to start music",
-  "pulsa play para iniciar la música",
-  "нажмите play, чтобы включить музыку",
-  "Play drücken, um Musik zu starten",
-  "appuie sur lecture pour lancer la musique"
- ],
- "loadError": [
-  "couldn't load audio",
-  "no se pudo cargar el audio",
-  "не удалось загрузить аудио",
-  "Audio konnte nicht geladen werden",
-  "impossible de charger l'audio"
- ],
- "letterFor": [
-  "a letter for",
-  "una carta para",
-  "письмо для",
-  "ein Brief für",
-  "une lettre pour"
- ],
- "placeholder": [
-  "Your message goes here.",
-  "Tu mensaje va aquí.",
-  "Ваше сообщение здесь.",
-  "Deine Nachricht kommt hierher.",
-  "Ton message va ici."
- ],
- "close": [
-  "Close",
-  "Cerrar",
-  "Закрыть",
-  "Schließen",
-  "Fermer"
- ],
- "secret": [
-  "Open the letter for iTake",
-  "Abrir la carta para iTake",
-  "Открыть письмо для iTake",
-  "Brief für iTake öffnen",
-  "Ouvrir la lettre pour iTake"
- ],
- "mute": [
-  "Mute music",
-  "Silenciar música",
-  "Отключить звук музыки",
-  "Musik stummschalten",
-  "Couper le son de la musique"
- ],
- "unmute": [
-  "Turn sound on",
-  "Activar sonido",
-  "Включить звук",
-  "Ton einschalten",
-  "Activer le son"
- ],
- "nothingPlaying": [
-  "nothing playing right now",
-  "nada sonando ahora",
-  "сейчас ничего не играет",
-  "gerade wird nichts abgespielt",
-  "rien en lecture pour le moment"
- ],
- "history": [
-  "recently played",
-  "escuchado recientemente",
-  "недавно прослушано",
-  "zuletzt gehört",
-  "écouté récemment"
- ],
- "historyEmpty": [
-  "no recent plays to show yet",
-  "aún no hay reproducciones recientes que mostrar",
-  "пока нет недавних прослушиваний",
-  "noch keine zuletzt gehörten Titel",
-  "aucune écoute récente à afficher pour le moment"
- ],
- "historyError": [
-  "recent plays are unavailable right now",
-  "las reproducciones recientes no están disponibles ahora",
-  "недавние прослушивания сейчас недоступны",
-  "zuletzt Gehörtes ist gerade nicht verfügbar",
-  "les écoutes récentes sont indisponibles pour le moment"
- ],
- "openSpotify": [
-  "Open in Spotify",
-  "Abrir en Spotify",
-  "Открыть в Spotify",
-  "In Spotify öffnen",
-  "Ouvrir dans Spotify"
- ],
- "loading": [
-  "loading",
-  "cargando",
-  "загрузка",
-  "lädt",
-  "chargement"
- ],
- "footer": [
-  "somewhere on the internet",
-  "en algún lugar de internet",
-  "где-то в интернете",
-  "irgendwo im Internet",
-  "quelque part sur internet"
- ]
+  "home": [
+    "home",
+    "inicio",
+    "главная",
+    "start",
+    "accueil"
+  ],
+  "about": [
+    "about me",
+    "sobre mí",
+    "обо мне",
+    "über mich",
+    "à propos"
+  ],
+  "music": [
+    "music",
+    "música",
+    "музыка",
+    "musik",
+    "musique"
+  ],
+  "theme": [
+    "Toggle theme",
+    "Cambiar tema",
+    "Сменить тему",
+    "Thema wechseln",
+    "Changer de thème"
+  ],
+  "language": [
+    "Language",
+    "Idioma",
+    "Язык",
+    "Sprache",
+    "Langue"
+  ],
+  "presence": [
+    "discord presence",
+    "presencia en discord",
+    "статус в discord",
+    "discord-präsenz",
+    "présence discord"
+  ],
+  "connecting": [
+    "connecting",
+    "conectando",
+    "подключение",
+    "verbinde",
+    "connexion"
+  ],
+  "live": [
+    "real time",
+    "tiempo real",
+    "онлайн",
+    "echtzeit",
+    "temps réel"
+  ],
+  "reconnecting": [
+    "reconnecting",
+    "reconectando",
+    "переподключение",
+    "verbinde neu",
+    "reconnexion"
+  ],
+  "unavailable": [
+    "unavailable",
+    "no disponible",
+    "недоступно",
+    "nicht verfügbar",
+    "indisponible"
+  ],
+  "notConfigured": [
+    "Discord ID not set",
+    "ID de Discord sin configurar",
+    "ID Discord не задан",
+    "Discord-ID nicht gesetzt",
+    "ID Discord non défini"
+  ],
+  "online": [
+    "online",
+    "en línea",
+    "в сети",
+    "online",
+    "en ligne"
+  ],
+  "idle": [
+    "idle",
+    "ausente",
+    "нет на месте",
+    "abwesend",
+    "inactif"
+  ],
+  "dnd": [
+    "do not disturb",
+    "no molestar",
+    "не беспокоить",
+    "bitte nicht stören",
+    "ne pas déranger"
+  ],
+  "offline": [
+    "offline",
+    "desconectado",
+    "не в сети",
+    "offline",
+    "hors ligne"
+  ],
+  "noActivity": [
+    "no current activity",
+    "sin actividad actual",
+    "нет активности",
+    "keine aktuelle Aktivität",
+    "aucune activité"
+  ],
+  "listening": [
+    "listening to spotify",
+    "escuchando spotify",
+    "слушает spotify",
+    "hört spotify",
+    "écoute spotify"
+  ],
+  "aboutTitle": [
+    "a bit of everything, I guess.",
+    "un poco de todo, supongo.",
+    "понемногу обо всём, наверное.",
+    "ein bisschen von allem, schätze ich.",
+    "un peu de tout, je suppose."
+  ],
+  "aboutP1": [
+    "I don’t always know what I’m doing, but I almost always end up finding something interesting.",
+    "No siempre sé qué estoy haciendo, pero casi siempre termino encontrando algo interesante.",
+    "Я не всегда понимаю, что делаю, но почти всегда в итоге нахожу что-нибудь интересное.",
+    "Ich weiß nicht immer, was ich gerade tue, aber fast immer finde ich am Ende etwas Interessantes.",
+    "Je ne sais pas toujours ce que je fais, mais je finis presque toujours par trouver quelque chose d’intéressant."
+  ],
+  "aboutP2": [
+    "I like ideas that appear out of nowhere, conversations that drag on for no reason, and those small things that make an ordinary day feel different.",
+    "Me gustan las ideas que aparecen de la nada, las conversaciones que se alargan sin motivo y esas pequeñas cosas que hacen que un día normal sea diferente.",
+    "Мне нравятся идеи, которые появляются из ниоткуда, разговоры, которые затягиваются без всякой причины, и те маленькие мелочи, которые делают обычный день особенным.",
+    "Ich mag Ideen, die aus dem Nichts auftauchen, Gespräche, die sich ohne Grund in die Länge ziehen, und diese kleinen Dinge, die einen normalen Tag anders machen.",
+    "J’aime les idées qui surgissent de nulle part, les conversations qui s’éternisent sans raison, et ces petites choses qui rendent un jour ordinaire différent."
+  ],
+  "aboutClose": [
+    "Under construction, like everyone else.",
+    "En construcción, como todo el mundo.",
+    "В разработке, как и все мы.",
+    "Im Aufbau, wie alle anderen auch.",
+    "En construction, comme tout le monde."
+  ],
+  "hint": [
+    "no presence received — join discord.gg/lanyard",
+    "sin datos de presencia — únete a discord.gg/lanyard",
+    "нет данных о статусе — вступите на discord.gg/lanyard",
+    "keine Präsenzdaten — tritt discord.gg/lanyard bei",
+    "aucune donnée de présence — rejoins discord.gg/lanyard"
+  ],
+  "seek": [
+    "Seek",
+    "Buscar",
+    "Перемотка",
+    "Suchen",
+    "Position"
+  ],
+  "play": [
+    "Play",
+    "Reproducir",
+    "Играть",
+    "Abspielen",
+    "Lecture"
+  ],
+  "pause": [
+    "Pause",
+    "Pausa",
+    "Пауза",
+    "Pause",
+    "Pause"
+  ],
+  "volume": [
+    "Volume",
+    "Volumen",
+    "Громкость",
+    "Lautstärke",
+    "Volume"
+  ],
+  "noTrack": [
+    "no track configured",
+    "sin canción configurada",
+    "трек не настроен",
+    "kein Titel eingestellt",
+    "aucun titre configuré"
+  ],
+  "playing": [
+    "playing",
+    "reproduciendo",
+    "играет",
+    "spielt",
+    "lecture"
+  ],
+  "paused": [
+    "paused",
+    "en pausa",
+    "пауза",
+    "pausiert",
+    "en pause"
+  ],
+  "tapToPlay": [
+    "tap play to start music",
+    "pulsa play para iniciar la música",
+    "нажмите play, чтобы включить музыку",
+    "Play drücken, um Musik zu starten",
+    "appuie sur lecture pour lancer la musique"
+  ],
+  "loadError": [
+    "couldn't load audio",
+    "no se pudo cargar el audio",
+    "не удалось загрузить аудио",
+    "Audio konnte nicht geladen werden",
+    "impossible de charger l'audio"
+  ],
+  "letterFor": [
+    "a letter for",
+    "una carta para",
+    "письмо для",
+    "ein Brief für",
+    "une lettre pour"
+  ],
+  "placeholder": [
+    "Your message goes here.",
+    "Tu mensaje va aquí.",
+    "Ваше сообщение здесь.",
+    "Deine Nachricht kommt hierher.",
+    "Ton message va ici."
+  ],
+  "close": [
+    "Close",
+    "Cerrar",
+    "Закрыть",
+    "Schließen",
+    "Fermer"
+  ],
+  "secret": [
+    "Open the letter for iTake",
+    "Abrir la carta para iTake",
+    "Открыть письмо для iTake",
+    "Brief für iTake öffnen",
+    "Ouvrir la lettre pour iTake"
+  ],
+  "mute": [
+    "Mute music",
+    "Silenciar música",
+    "Отключить звук музыки",
+    "Musik stummschalten",
+    "Couper le son de la musique"
+  ],
+  "unmute": [
+    "Turn sound on",
+    "Activar sonido",
+    "Включить звук",
+    "Ton einschalten",
+    "Activer le son"
+  ],
+  "nothingPlaying": [
+    "nothing playing right now",
+    "nada sonando ahora",
+    "сейчас ничего не играет",
+    "gerade wird nichts abgespielt",
+    "rien en lecture pour le moment"
+  ],
+  "history": [
+    "recently played",
+    "escuchado recientemente",
+    "недавно прослушано",
+    "zuletzt gehört",
+    "écouté récemment"
+  ],
+  "historyEmpty": [
+    "no recent plays to show yet",
+    "aún no hay reproducciones recientes que mostrar",
+    "пока нет недавних прослушиваний",
+    "noch keine zuletzt gehörten Titel",
+    "aucune écoute récente à afficher pour le moment"
+  ],
+  "historyError": [
+    "recent plays are unavailable right now",
+    "las reproducciones recientes no están disponibles ahora",
+    "недавние прослушивания сейчас недоступны",
+    "zuletzt Gehörtes ist gerade nicht verfügbar",
+    "les écoutes récentes sont indisponibles pour le moment"
+  ],
+  "openSpotify": [
+    "Open in Spotify",
+    "Abrir en Spotify",
+    "Открыть в Spotify",
+    "In Spotify öffnen",
+    "Ouvrir dans Spotify"
+  ],
+  "loading": [
+    "loading",
+    "cargando",
+    "загрузка",
+    "lädt",
+    "chargement"
+  ]
 }
