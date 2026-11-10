@@ -1,0 +1,13 @@
+:root{--entry-bg:#050505;--entry-fg:#f2f2f5;--entry-muted:#9a9aa3;--entry-font:"JetBrains Mono",ui-monospace,monospace;--entry-out:.7s;--entry-ease:cubic-bezier(.4,0,.2,1)}
+#entry{position:fixed;inset:0;z-index:1000;width:100%;height:100vh;height:100dvh;display:grid;place-items:center;background:var(--entry-bg);color:var(--entry-fg);opacity:1;transition:opacity var(--entry-out) var(--entry-ease),visibility 0s linear var(--entry-out)}
+#entry[hidden]{display:none}
+.entry-btn{appearance:none;background:none;border:0;margin:0;padding:1.5rem 2rem;color:inherit;font:500 clamp(.85rem,3.6vw,1.05rem)/1 var(--entry-font);letter-spacing:.32em;text-transform:lowercase;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:opacity .3s,letter-spacing var(--entry-out) var(--entry-ease),transform var(--entry-out) var(--entry-ease)}
+.entry-btn:focus-visible{outline:1px solid var(--entry-fg);outline-offset:6px}
+@media(hover:hover){.entry-btn:hover{letter-spacing:.4em}}
+html[data-entry=opening] #entry{opacity:0;visibility:hidden;pointer-events:none}
+html[data-entry=opening] .entry-btn{transform:scale(1.04)}
+html[data-entry=locked],html[data-entry=locked] body{overflow:hidden;height:100%}
+html[data-entry=locked] :where(.nav,main,footer){visibility:hidden;opacity:0}
+html[data-entry=locked] :where(.nav,main,footer,#stars),html[data-entry=locked] :where(.nav,main,footer,#stars) *{animation-play-state:paused!important}
+:where(main,footer){transition:opacity var(--entry-out) var(--entry-ease)}
+@media(prefers-reduced-motion:reduce){#entry,.entry-btn,:where(main,footer){transition:none}}

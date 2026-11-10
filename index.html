@@ -14,8 +14,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="entry.css">
+<script src="entry.js"></script>
 </head>
 <body>
+<div id="entry" role="dialog" aria-modal="true" aria-label="whoismatheo"><button class="entry-btn" type="button">tap to enter</button></div>
 <div id="stars" aria-hidden="true"></div>
 <header class="nav intro-i" style="--d:.1s">
   <nav aria-label="Main"><span class="brand" aria-hidden="true">✦</span><a href="#home" data-i18n="home"></a><a href="#about" data-i18n="about"></a><a href="#minecraft">minecraft</a><a href="#history" data-i18n="music"></a></nav>
@@ -28,7 +31,7 @@
 <section id="home" class="hero">
   <svg class="orbit intro-i" style="--d:.35s" viewBox="-200 -100 400 200" aria-hidden="true"><g transform="rotate(-12)"><ellipse class="ring" pathLength="1" rx="170" ry="52"/><ellipse class="ring r2" rx="118" ry="34"/><circle r="3.5"><animateMotion dur="75s" repeatCount="indefinite" path="M170 0A170 52 0 1 1 -170 0A170 52 0 1 1 170 0"/></circle><circle r="2.5" opacity=".6"><animateMotion dur="110s" repeatCount="indefinite" path="M-118 0A118 34 0 1 0 118 0A118 34 0 1 0 -118 0"/></circle></g><path class="twinkle" d="M0-26Q3-3 26 0Q3 3 0 26Q-3 3-26 0Q-3-3 0-26Z"/></svg>
   <svg class="hero-star intro-i" style="--d:.5s" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="chr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".42" stop-color="#9a9aa3"/><stop offset=".55" stop-color="#25252b"/><stop offset="1" stop-color="#ececf1"/></linearGradient></defs><path fill="url(#chr)" stroke="#f2f2f5" stroke-opacity=".55" stroke-width=".7" d="M50 0C53 33 67 47 100 50C67 53 53 67 50 100C47 67 33 53 0 50C33 47 47 33 50 0Z"/></svg>
-  <h1 class="hero-title intro-i" style="--d:.65s">whoismatheo</h1>
+  <h1 class="sr">whoismatheo</h1>
   <p class="tag mono intro-i" style="--d:1s" data-i18n="hero"></p>
   <p class="tri intro-i" style="--d:1.2s" aria-hidden="true">✦ ✦ ✦</p>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="chm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".42" stop-color="#9a9aa3"/><stop offset=".55" stop-color="#25252b"/><stop offset="1" stop-color="#ececf1"/></linearGradient><symbol id="s4" viewBox="0 0 100 100"><path fill="url(#chm)" stroke="#f2f2f5" stroke-opacity=".55" stroke-width=".7" d="M50 0C53 33 67 47 100 50C67 53 53 67 50 100C47 67 33 53 0 50C33 47 47 33 50 0Z"/></symbol><symbol id="gl" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="50" cy="50" r="46"/><ellipse cx="50" cy="50" rx="46" ry="16"/><ellipse cx="50" cy="50" rx="46" ry="32"/><ellipse cx="50" cy="50" rx="16" ry="46"/><ellipse cx="50" cy="50" rx="32" ry="46"/><path d="M4 50h92M50 4v92"/></g></symbol><symbol id="ht" viewBox="0 0 100 90"><path fill="url(#chm)" stroke="#f2f2f5" stroke-opacity=".7" stroke-width="2" d="M50 86S6 58 6 28C6 12 18 4 30 4c9 0 16 5 20 12 4-7 11-12 20-12 12 0 24 8 24 24 0 30-44 58-44 58Z"/><path fill="#050505" fill-opacity=".85" d="M50 66S24 48 24 32c0-8 6-12 12-12 6 0 11 4 14 9 3-5 8-9 14-9 6 0 12 4 12 12 0 16-26 34-26 34Z"/><path fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="3" stroke-linecap="round" d="M18 26c2-8 8-13 15-13"/></symbol></defs></svg>

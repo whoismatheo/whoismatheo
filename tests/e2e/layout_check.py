@@ -23,7 +23,7 @@ def run(scn, lang, w, h, shot=None, musicoff=True, bottom=None, banner=True, bio
         ctx=b.new_context(viewport={"width":w,"height":h},device_scale_factor=2 if w<500 else 1,is_mobile=w<500,has_touch=w<500)
         pg=ctx.new_page(); errs=[]
         pg.on("console",lambda m: errs.append(m.type+": "+m.text) if m.type in("error","warning") else None); pg.on("pageerror",lambda e: errs.append("pageerror: "+str(e)))
-        pg.add_init_script("localStorage.setItem('lang','%s');"%lang+("localStorage.setItem('music','off')" if musicoff else ""))
+        pg.add_init_script("sessionStorage.setItem('entered','1');localStorage.setItem('lang','%s');"%lang+("localStorage.setItem('music','off')" if musicoff else ""))
         prof={"id":ID,"username":"matheo","displayName":"Matheo","avatar":"https://cdn.discordapp.com/avatars/%s/x.png"%ID,"avatarStatic":"https://cdn.discordapp.com/avatars/%s/x.png"%ID,"decoration":"","banner":{"url":"https://cdn.discordapp.com/banners/%s/b.png?size=1024"%ID,"staticUrl":"https://cdn.discordapp.com/banners/%s/b.png?size=1024"%ID,"animated":False} if banner else None,"accentColor":"","badges":["hypesquadBravery","activeDeveloper","earlySupporter","verifiedDeveloper"],"bannerSource":"ok" if banner else "no_token"}
         if bio: prof["bio"]=bio
         def route(r):
