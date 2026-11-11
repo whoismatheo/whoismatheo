@@ -30,11 +30,13 @@
       })(t0);
     }
     function dissolve(dur, done) {
-      var rows = frames[frames.length - 1].split("\n"), h = rows.length, w = art.cols, f = [], x, t0 = performance.now();
+      var rows = frames[frames.length - 1].split("\n"), h = rows.length, w = art.cols, f = [], x, t0 = performance.now(), lastDraw = -99;
       for (x = 0; x < w; x++) f.push(1 + Math.random() * 7);
       var th = rows.map(function (r, y) { return r.split("").map(function () { return (1 - y / h) * .3 + Math.random() * .5; }); });
       (function step(now) {
         var t = Math.max(0, Math.min(1, (now - t0) / dur)), out = [];
+        if (t < 1 && now - lastDraw < 30) { requestAnimationFrame(step); return; }
+        lastDraw = now;
         for (var y = 0; y < h; y++) {
           var line = "";
           for (x = 0; x < w; x++) {
@@ -74,8 +76,7 @@
     }
     fit(); draw(frames[0]); addEventListener("resize", fit);
     gated.forEach(function (n) { n.inert = true; });
-    btn.addEventListener("click", enter);
-    stage.addEventListener("click", enter);
+    screen.addEventListener("click", enter);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();

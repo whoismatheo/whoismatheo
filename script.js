@@ -249,10 +249,10 @@ dlg.addEventListener("close", vidStop);
 const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const layers = [{n:34,s:[1,1.5],k:.015,d:160},{n:22,s:[1.5,2.2],k:.04,d:110},{n:9,s:[2.4,3.4],k:.09,d:80}].map(L => {
   const l = document.createElement("div"), d = document.createElement("div"); l.className = "sl"; d.className = "sd"; d.style.setProperty("--dd", L.d + "s"); l.appendChild(d);
+  const groups = still ? [] : [0, 1, 2, 3].map(g => { const t = document.createElement("div"); t.className = "tg"; t.style.setProperty("--t", 3.2 + g * 1.7 + Math.random() * 1.5 + "s"); t.style.setProperty("--dl", -Math.random() * 8 + "s"); d.appendChild(t); return t; });
   for (let i = 0; i < L.n; i++){ const e = document.createElement("i"), z = L.s[0] + Math.random() * (L.s[1] - L.s[0]);
     e.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${z}px;height:${z}px;opacity:${.25+Math.random()*.65}`;
-    if (Math.random() < .45 && !still){ e.className = "t"; e.style.setProperty("--t", 3 + Math.random() * 6 + "s"); e.style.setProperty("--dl", -Math.random() * 8 + "s"); }
-    d.appendChild(e); }
+    (Math.random() < .45 && groups.length ? groups[Math.floor(Math.random() * groups.length)] : d).appendChild(e); }
   $("#stars").appendChild(l); return { l, k: L.k };
 });
 let mx = 0, raf = 0;
@@ -329,5 +329,5 @@ if (typeof IntersectionObserver !== "undefined") {
   const links = [...document.querySelectorAll("nav a")];
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(a => a.toggleAttribute("aria-current", a.hash === "#" + e.target.id)); }), { rootMargin: "-45% 0px -50% 0px" });
   ["home", "about", "minecraft", "history"].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
-  [["#home", ".orbit"], ["#about", ".geo"]].forEach(([k, v]) => { const sec = document.querySelector(k), svg = document.querySelector(v); if (sec && svg && svg.pauseAnimations) new IntersectionObserver(([e]) => e.isIntersecting ? svg.unpauseAnimations() : svg.pauseAnimations()).observe(sec); });
+  [["#home", ".orbit"], ["#about", ".geo"]].forEach(([k, v]) => { const sec = document.querySelector(k), svgs = [...document.querySelectorAll(v)].filter(x => x.pauseAnimations); if (sec && svgs.length) new IntersectionObserver(([e]) => svgs.forEach(x => e.isIntersecting ? x.unpauseAnimations() : x.pauseAnimations())).observe(sec); });
 }

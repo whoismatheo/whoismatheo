@@ -299,7 +299,7 @@ nav a[aria-current]::after{transform:scaleX(1)}
 .btn:hover:not(:disabled){border-color:var(--hl)}
 .lang-menu{border-radius:10px;background:var(--card);border-color:var(--hl)}
 .hero{position:relative;isolation:isolate;min-height:64vh;gap:.9rem}
-.orbit{position:absolute;left:50%;top:50%;translate:-50% -46%;width:min(900px,96vw);max-width:none;z-index:-1;opacity:.8}
+.orbit,.od{position:absolute;left:50%;top:50%;translate:-50% -46%;width:min(900px,96vw);max-width:none;z-index:-1;opacity:.8}
 .hero-star{width:clamp(96px,20vw,168px);filter:drop-shadow(0 0 16px rgba(255,255,255,.45))}
 [data-theme=light] .tag{font-family:"JetBrains Mono",monospace;font-size:.82rem;letter-spacing:.16em}
 .tag::before{content:"> ";color:var(--mt)}
@@ -342,7 +342,7 @@ footer p::before{content:"✦ ";color:var(--tx)}
 footer::after{content:"// whoismatheo // v1.0";position:absolute;right:1.2rem;bottom:.4rem;font:400 .62rem/1 "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--mt)}
 @media(max-width:600px){.brand{display:none}nav a{padding:.8rem .55rem;letter-spacing:.08em}.card>.row:first-child,.hist-head{padding-right:4.6rem}.card::after,.hist-sec::after{right:.6rem;transform:scale(.85);transform-origin:right top}.hist-head .car-ctl{margin-right:3.6rem}footer::after{display:none}}
 .hero-star{margin-bottom:.9rem}
-@media(max-width:600px){.orbit{translate:-50% -60%}}
+@media(max-width:600px){.orbit,.od{translate:-50% -60%}}
 
 #about{content-visibility:auto;contain-intrinsic-size:auto 420px}
 .hero{min-height:clamp(560px,86vh,820px)}
@@ -441,3 +441,33 @@ footer::after{content:"// whoismatheo // v1.0";position:absolute;right:1.2rem;bo
 .m3{right:17%;top:9%;width:clamp(16px,2vw,26px);opacity:.9}
 .torus{left:63%;top:24%;width:clamp(26px,3vw,40px);aspect-ratio:1;border-radius:50%;border:4px solid;border-color:#e4e4ea #6a6a73 #232328 #a0a0a8;transform:rotate(-12deg) scaleY(.42);box-shadow:0 0 14px rgba(255,255,255,.14)}
 @media(max-width:700px){.pring{right:-38%;top:50%;width:300px}.m1{right:42%;top:67%;width:22px}.m2{left:30%;top:20%}.m3{right:12%;top:12%;width:16px}.torus{left:auto;right:16%;top:30%;width:26px}}
+
+.tg{position:absolute;inset:0;animation:tw var(--t,5s) ease-in-out var(--dl,0s) infinite;will-change:opacity}
+#minecraft,#history{content-visibility:auto;contain-intrinsic-size:auto 640px}
+
+.od{--ow:min(900px,96vw);aspect-ratio:2/1;color:var(--tx);pointer-events:none;overflow:clip}
+.odr{position:absolute;inset:0;transform:rotate(-12deg)}
+.oy,.ox{position:absolute;left:50%;top:50%;width:0;height:0}
+.oy{animation:oy calc(var(--p)/2) cubic-bezier(.37,0,.63,1) calc(var(--p)*-.75) infinite alternate}
+.ox{animation:ox1 calc(var(--p)/2) cubic-bezier(.37,0,.63,1) infinite alternate}
+.ox.rv2{animation-name:ox2}
+.od i{position:absolute;border-radius:50%;background:currentColor;translate:-50% -50%}
+.d1{width:calc(var(--ow)*.0175);aspect-ratio:1}
+.d2{width:calc(var(--ow)*.0125);aspect-ratio:1;opacity:.6}
+.oy:nth-child(2){--ry:.085}
+.oy:nth-child(1){--ry:.13}
+@keyframes oy{from{transform:translateY(calc(var(--ow)*var(--ry,.13)))}to{transform:translateY(calc(var(--ow)*var(--ry,.13)*-1))}}
+@keyframes ox1{from{transform:translateX(calc(var(--ow)*.425))}to{transform:translateX(calc(var(--ow)*-.425))}}
+@keyframes ox2{from{transform:translateX(calc(var(--ow)*-.295))}to{transform:translateX(calc(var(--ow)*.295))}}
+.geo-box{position:relative;width:min(260px,80%);max-width:78%;margin:auto;color:var(--tx)}
+.geo-box .geo{display:block;width:100%;max-width:none;margin:0}
+.geo-x{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
+.geo-x .g1{fill:none;stroke:currentColor;stroke-opacity:.3;stroke-dasharray:1 5}
+.gr{position:absolute;inset:0;animation:sp var(--p) linear infinite}
+.gr.rv2{animation-direction:reverse}
+.gr b{position:absolute;left:calc(50% + var(--r));top:50%;width:2.6%;aspect-ratio:1;border-radius:50%;background:currentColor;translate:-50% -50%}
+@media(max-width:767px){.geo-box{width:min(168px,56%)}}
+.ig{animation:ignite 1.6s cubic-bezier(.2,.8,.2,1) .4s both}
+.quick .ig{animation-delay:0s}
+.br{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible;transform-box:border-box;animation:breathe 7s ease-in-out 2s infinite}
+.quick .br{animation-delay:.5s}
