@@ -27,20 +27,27 @@ with sync_playwright() as p:
         if name=="mobile": pg.screenshot(path=os.path.join(OUT,"entry-mobile.png"))
         pos=pg.evaluate("(()=>{const s=document.querySelector('.zp-stage').getBoundingClientRect(),b=document.querySelector('.entry-btn').getBoundingClientRect();return {gap:Math.round(b.top-s.bottom),cx:Math.round((s.left+s.right)/2-innerWidth/2),bcx:Math.round((b.left+b.right)/2-innerWidth/2),bb:Math.round(innerHeight-b.bottom)}})()")
         ck(name+": text sits right under the zippo, centered, not pinned to the bottom",abs(pos["gap"])<=24 and abs(pos["cx"])<=2 and abs(pos["bcx"])<=2 and pos["bb"]>60)
-        lid="(()=>{const m=getComputedStyle(document.querySelector('.zp-pivot')).transform;if(m==='none')return 0;const v=m.match(/matrix3d\\((.*)\\)/)[1].split(',').map(Number);return Math.round(Math.atan2(v[6],v[5])*180/Math.PI)})()"
-        ck(name+": zippo starts open (lid far from closed)",abs(pg.evaluate(lid))>60)
+        snap="document.querySelector('.zp-c').textContent.replace(/\\s/g,'').length"
+        ck(name+": ascii only (pre text, no image/svg/canvas/3d), starts open",pg.evaluate("!document.querySelector('#entry img,#entry svg,#entry canvas')")and pg.evaluate("document.querySelectorAll('#entry pre.zp-l').length")==3 and pg.evaluate("window.ZP.frames.length")>=8 and pg.evaluate(snap)>200 and pg.evaluate("document.querySelector('.zp-c').textContent")==pg.evaluate("window.ZP.frames[0].replace(/[^#%8&@\\n]/g,' ')"))
         pg.tap(".entry-btn") if mobile else pg.click(".entry-btn")
         pg.wait_for_timeout(60)
         ck(name+": closing state first",pg.evaluate(STATE)=="closing")
         ck(name+": site still locked while the lid closes",pg.evaluate("getComputedStyle(document.querySelector('main')).visibility")=="hidden")
-        if not reduce:
+        if reduce=="no-preference":
             vals=[]
             for _ in range(40):
                 if pg.evaluate(STATE)!="closing": break
-                vals.append(abs(pg.evaluate(lid))); pg.wait_for_timeout(40)
-            ck(name+": lid swings through intermediate angles (animated, not a swap)",any(8<v<100 for v in vals) and max(vals)>60)
-        pg.wait_for_function("document.documentElement.dataset.entry==='opening'",timeout=4000)
-        ck(name+": lid closed before the reveal starts",abs(pg.evaluate(lid))<=1)
+                vals.append(pg.evaluate("document.querySelector('.zp-c').textContent")); pg.wait_for_timeout(40)
+            ck(name+": ascii frames change while the lid closes (animated, not a swap)",len(set(vals))>=4)
+        pg.wait_for_function("document.documentElement.dataset.entry==='dissolving'||("+repr(reduce)+"==='reduce'&&document.documentElement.dataset.entry!=='closing')",timeout=4000)
+        ck(name+": closed zippo shown before dissolving, site still hidden",reduce=="reduce" or (pg.evaluate("getComputedStyle(document.querySelector('main')).visibility")=="hidden" and pg.evaluate(snap)>0))
+        if reduce=="no-preference":
+            counts=[]
+            for _ in range(60):
+                if pg.evaluate(STATE)!="dissolving": break
+                counts.append(pg.evaluate(snap)); pg.wait_for_timeout(30)
+            ck(name+": zippo dissolves into characters (density drops to nothing)",len(counts)>=5 and counts[0]>counts[len(counts)//2]>=counts[-1] and counts[-1]<counts[0]*.15)
+        pg.wait_for_function("['opening','open'].includes(document.documentElement.dataset.entry)",timeout=4000)
         ck(name+": site unlocked only now",pg.evaluate("getComputedStyle(document.querySelector('main')).visibility")=="visible")
         if name!="reduced": pg.screenshot(path=os.path.join(OUT,"opening-"+name+".png"))
         pg.wait_for_function("document.documentElement.dataset.entry==='open'",timeout=5000)
