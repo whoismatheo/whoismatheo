@@ -20,7 +20,8 @@ const FAVORITE = { name: "Miami Practice", address: "miamiprac.com", icon: "http
 const OWNED = [
   { id: "28de4a81688ad18b49e735a273e086c18f1e3966956123ccb574034c06f5d336", label: "pan" },
   { id: "5ec930cdd2629c8771655c60eebeb867b4b6559b0e6d3bc71c40c96347fa03f0", label: "common" },
-  { id: "2c579968c64c1719740fd8c2a451461879b238002574fce48f7d1a7c36a1c7d4", label: "builder" }
+  { id: "2c579968c64c1719740fd8c2a451461879b238002574fce48f7d1a7c36a1c7d4", label: "builder" },
+  { id: "7c418dfbd37412a55e9f1425c9807a591ad10cf71b1edb576a587be9114c277f", label: "aurora" }
 ];
 
 async function profile() {

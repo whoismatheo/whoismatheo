@@ -28,9 +28,11 @@ with sync_playwright() as p:
         if name=="mobile": pg.screenshot(path=os.path.join(OUT,"entry-mobile.png"))
         pos=pg.evaluate("(()=>{const s=document.querySelector('.zp-stage').getBoundingClientRect(),b=document.querySelector('.entry-btn').getBoundingClientRect();return {gap:Math.round(b.top-s.bottom),cx:Math.round((s.left+s.right)/2-innerWidth/2),bcx:Math.round((b.left+b.right)/2-innerWidth/2),bb:Math.round(innerHeight-b.bottom)}})()")
         ck(name+": text sits right under the zippo, centered, not pinned to the bottom",abs(pos["gap"])<=24 and abs(pos["cx"])<=2 and abs(pos["bcx"])<=2 and pos["bb"]>60)
+        ink=pg.evaluate("(()=>{let lo=1e9,hi=-1,W=0;document.querySelectorAll('#entry .zp-l').forEach(p=>p.textContent.split('\\n').forEach(r=>{W=Math.max(W,r.length);const a=r.search(/\\S/);if(a>=0){lo=Math.min(lo,a);hi=Math.max(hi,r.replace(/\\s+$/,'').length-1)}}));return {off:(lo+hi)/2-(W-1)/2,W}})()")
+        ck(name+": zippo artwork is horizontally centered (ink centered in the stage, stage centered on screen)",abs(ink["off"])<=2.5)
         snap="document.querySelector('.zp-c').textContent.replace(/\\s/g,'').length"
-        ck(name+": ascii only (pre text, no image/svg/canvas/3d), starts open",pg.evaluate("!document.querySelector('#entry img,#entry svg,#entry canvas')")and pg.evaluate("document.querySelectorAll('#entry pre.zp-l').length")==3 and pg.evaluate("window.ZP.frames.length")>=8 and pg.evaluate(snap)>200 and pg.evaluate("(()=>{const n=t=>t.split('\\n').map(l=>l.replace(/\\s+$/,'')).join('\\n').replace(/\\n+$/,'');return n(document.querySelector('.zp-c').textContent)===n(window.ZP.frames[0].replace(/[^#%8&@\\n]/g,' '))})()"))
-        pg.evaluate("(()=>{const s=document.querySelector('.zp-stage'),r0=s.getBoundingClientRect();window.__dev=0;(function f(){const e=document.querySelector('.zp-stage');if(e){const r=e.getBoundingClientRect();window.__dev=Math.max(window.__dev,Math.abs(r.left-r0.left),Math.abs(r.top-r0.top),Math.abs(r.width-r0.width),Math.abs(r.height-r0.height))}requestAnimationFrame(f)})()})()")
+        ck(name+": ascii only (pre text, no image/svg/canvas/3d), starts open",pg.evaluate("!document.querySelector('#entry img,#entry svg,#entry canvas')")and pg.evaluate("document.querySelectorAll('#entry pre.zp-l').length")==3 and pg.evaluate("window.ZP.frames.length")>=8 and pg.evaluate(snap)>200 and pg.evaluate("(()=>{const n=t=>{let l=t.split('\\n').map(x=>x.replace(/\\s+$/,''));while(l.length&&!l[0])l.shift();while(l.length&&!l[l.length-1])l.pop();const ind=Math.min(...l.filter(Boolean).map(x=>x.search(/\\S/)));return l.map(x=>x.slice(ind)).join('\\n')};return n(document.querySelector('.zp-c').textContent)===n(window.ZP.frames[0].replace(/[^#%8&@\\n]/g,' '))})()"))
+        pg.evaluate("(()=>{let r0=null;window.__dev=0;(function f(){const e=document.querySelector('.zp-stage');if(e&&document.documentElement.dataset.entry==='dissolving'){const r=e.getBoundingClientRect();if(!r0)r0=r;window.__dev=Math.max(window.__dev,Math.abs(r.left-r0.left),Math.abs(r.top-r0.top),Math.abs(r.width-r0.width),Math.abs(r.height-r0.height))}requestAnimationFrame(f)})()})()")
         pg.touchscreen.tap(12,12) if mobile else pg.mouse.click(12,12)
         pg.wait_for_timeout(60)
         ck(name+": closing state first",pg.evaluate(STATE)=="closing")
@@ -43,6 +45,8 @@ with sync_playwright() as p:
             ck(name+": ascii frames change while the lid closes (animated, not a swap)",len(set(vals))>=4)
         pg.wait_for_function("document.documentElement.dataset.entry==='dissolving'||("+repr(reduce)+"==='reduce'&&document.documentElement.dataset.entry!=='closing')",timeout=4000)
         ck(name+": closed zippo shown before dissolving, site still hidden",reduce=="reduce" or (pg.evaluate("getComputedStyle(document.querySelector('main')).visibility")=="hidden" and pg.evaluate(snap)>0))
+        cc=pg.evaluate("(()=>{const st=document.querySelector('.zp-stage').getBoundingClientRect();let lo=1e9,hi=-1,W=0;document.querySelectorAll('#entry .zp-l').forEach(p=>p.textContent.split('\\n').forEach(r=>{W=Math.max(W,r.length);const a=r.search(/\\S/);if(a>=0){lo=Math.min(lo,a);hi=Math.max(hi,r.replace(/\\s+$/,'').length-1)}}));const cw=st.width/W;return Math.abs(st.left+((lo+hi)/2+.5)*cw-innerWidth/2)/innerWidth})()")
+        ck(name+": closed zippo is centered on the screen when it starts to dissolve",reduce=="reduce" or cc<=0.02)
         if reduce=="no-preference":
             counts=[]
             for _ in range(60):
@@ -50,7 +54,7 @@ with sync_playwright() as p:
                 counts.append(pg.evaluate(snap)); pg.wait_for_timeout(30)
             ck(name+": zippo dissolves into characters (density drops to nothing)",len(counts)>=5 and counts[0]>counts[len(counts)//2]>=counts[-1] and counts[-1]<counts[0]*.15)
         pg.wait_for_function("['opening','open'].includes(document.documentElement.dataset.entry)",timeout=4000)
-        ck(name+": zippo never moves or resizes while closing and dissolving (stays in place)",pg.evaluate("window.__dev")<=1)
+        ck(name+": zippo stays exactly in place while it dissolves",pg.evaluate("window.__dev")<=1)
         ck(name+": site unlocked only now",pg.evaluate("getComputedStyle(document.querySelector('main')).visibility")=="visible")
         if name!="reduced": pg.screenshot(path=os.path.join(OUT,"opening-"+name+".png"))
         pg.wait_for_function("document.documentElement.dataset.entry==='open'",timeout=5000)

@@ -135,7 +135,7 @@ test("recent: cleanup - duplicates already stored by older versions are merged (
 });
 test("minecraft: real profile for sxhq (uuid, skin model, equipped + owned pan/common capes as data uris, fixed favorite server)", async () => {
   const prev = global.fetch, png = Buffer.from("89504e470d0a1a0a", "hex"), id = "0123456789abcdef0123456789abcdef";
-  const PAN = "28de4a81688ad18b49e735a273e086c18f1e3966956123ccb574034c06f5d336", COMMON = "5ec930cdd2629c8771655c60eebeb867b4b6559b0e6d3bc71c40c96347fa03f0", BUILDER = "2c579968c64c1719740fd8c2a451461879b238002574fce48f7d1a7c36a1c7d4";
+  const PAN = "28de4a81688ad18b49e735a273e086c18f1e3966956123ccb574034c06f5d336", COMMON = "5ec930cdd2629c8771655c60eebeb867b4b6559b0e6d3bc71c40c96347fa03f0", BUILDER = "2c579968c64c1719740fd8c2a451461879b238002574fce48f7d1a7c36a1c7d4", AURORA = "7c418dfbd37412a55e9f1425c9807a591ad10cf71b1edb576a587be9114c277f";
   const mk = cape => Buffer.from(JSON.stringify({ textures: { SKIN: { url: "http://textures.minecraft.net/texture/skin1", metadata: { model: "slim" } }, ...(cape ? { CAPE: { url: "http://textures.minecraft.net/texture/" + cape } } : {}) } })).toString("base64");
   const seen = []; let down = false, tex = mk("cape1"), missing = null;
   global.fetch = async url => { seen.push(url); if (down) return { ok: false, status: 503, json: async () => ({}) };
@@ -147,13 +147,13 @@ test("minecraft: real profile for sxhq (uuid, skin model, equipped + owned pan/c
     let r = await call(load("minecraft.js", {})); const j = JSON.parse(r.body);
     assert.equal(r.status, 200); assert.equal(j.name, "sxhq"); assert.equal(j.uuid, "01234567-89ab-cdef-0123-456789abcdef"); assert.equal(j.edition, "java");
     assert.equal(j.skin.model, "slim"); assert(j.skin.data.startsWith("data:image/png;base64,"));
-    assert.deepEqual(j.capes.map(c => c.id), ["cape1", PAN, COMMON, BUILDER]); assert.deepEqual(j.capes.map(c => c.active), [true, false, false, false]); assert(j.capes.every(c => c.data.startsWith("data:image/png;base64,")));
+    assert.deepEqual(j.capes.map(c => c.id), ["cape1", PAN, COMMON, BUILDER, AURORA]); assert.deepEqual(j.capes.map(c => c.active), [true, false, false, false, false]); assert(j.capes.every(c => c.data.startsWith("data:image/png;base64,")));
     assert.deepEqual([j.server.name, j.server.address, j.server.icon, j.server.source], ["Miami Practice", "miamiprac.com", "https://api.mcsrvstat.us/icon/miamiprac.com", "favorite"]);
     assert(/s-maxage=60,/.test(r.headers["cache-control"]));
     assert(seen.every(u => /^https:\/\/(api\.minecraftservices\.com|sessionserver\.mojang\.com|textures\.minecraft\.net)\//.test(u)));
     tex = mk(PAN); missing = COMMON;
     r = await call(load("minecraft.js", {})); const k = JSON.parse(r.body);
-    assert.deepEqual(k.capes.map(c => c.id), [PAN, BUILDER]); assert.equal(k.capes[0].active, true, "equipped owned cape is marked active, deduplicated, and a failing texture is dropped");
+    assert.deepEqual(k.capes.map(c => c.id), [PAN, BUILDER, AURORA]); assert.equal(k.capes[0].active, true, "equipped owned cape is marked active, deduplicated, and a failing texture is dropped");
 down = true; r = await call(load("minecraft.js", {})); assert.equal(r.status, 503); assert.deepEqual(JSON.parse(r.body), { error: "unavailable" });
   } finally { global.fetch = prev; }
 });
