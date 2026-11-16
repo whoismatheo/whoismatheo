@@ -19,11 +19,12 @@ const dashed = h => h.replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, "$1-$2-$3-$4-
 const FAVORITE = { name: "Miami Practice", address: "miamiprac.com", icon: "https://api.mcsrvstat.us/icon/miamiprac.com" };
 const OWNED = [
   { id: "28de4a81688ad18b49e735a273e086c18f1e3966956123ccb574034c06f5d336", label: "pan" },
-  { id: "5ec930cdd2629c8771655c60eebeb867b4b6559b0e6d3bc71c40c96347fa03f0", label: "common" }
+  { id: "5ec930cdd2629c8771655c60eebeb867b4b6559b0e6d3bc71c40c96347fa03f0", label: "common" },
+  { id: "2c579968c64c1719740fd8c2a451461879b238002574fce48f7d1a7c36a1c7d4", label: "builder" }
 ];
 
 async function profile() {
-  if (memo && Date.now() - memo.t < 600000) return memo.v;
+  if (memo && Date.now() - memo.t < 75000) return memo.v;
   let p;
   try { p = await getJson("https://api.minecraftservices.com/minecraft/profile/lookup/name/" + NAME); }
   catch (e) { if (e.status === 404) throw e; p = await getJson("https://api.mojang.com/users/profiles/minecraft/" + NAME); }
@@ -47,7 +48,7 @@ async function profile() {
 
 module.exports = async (req, res) => {
   if (!allowGet(req, res)) return;
-  try { sendJson(res, 200, await profile(), "public, s-maxage=600, stale-while-revalidate=3600"); }
+  try { sendJson(res, 200, await profile(), "public, s-maxage=60, stale-while-revalidate=120"); }
   catch (e) {
     if (memo) return sendJson(res, 200, memo.v, "public, s-maxage=60");
     sendJson(res, e.status === 429 ? 429 : 503, { error: "unavailable" }, "public, s-maxage=30");

@@ -16,7 +16,12 @@
     if (root.dataset.entry === "open") { screen.remove(); return; }
     var layers = stage.querySelectorAll(".zp-l"), frames = art.frames, gated = document.querySelectorAll(".nav, main, footer");
     var calm = matchMedia("(prefers-reduced-motion: reduce)").matches, started = false;
-    function draw(text) { for (var i = 0; i < layers.length; i++) layers[i].textContent = text.replace(tiers[i], " "); }
+    function pad(text) {
+      var rows = text.split("\n"), out = [], y;
+      for (y = 0; y < art.rows; y++) { var r = rows[y] || ""; out.push(r.length < art.cols ? r + new Array(art.cols - r.length + 1).join(" ") : r); }
+      return out.join("\n");
+    }
+    function draw(text) { text = pad(text); for (var i = 0; i < layers.length; i++) layers[i].textContent = text.replace(tiers[i], " "); }
     function fit() {
       var fs = Math.max(4.5, Math.min((innerWidth - 28) / (art.cols * .6), innerHeight * .6 / art.rows, 16));
       screen.style.setProperty("--fs", fs.toFixed(2) + "px");

@@ -11,11 +11,11 @@
   const note = t => { const m = $("#mc-msg"); m.textContent = t; m.hidden = !t; };
 
   const load = async () => {
-    try { const c = JSON.parse(sessionStorage.getItem("mc3") || "null"); if (c && Date.now() - c.t < 6e5) return c.v; } catch (e) {}
+    try { const c = JSON.parse(sessionStorage.getItem("mc4") || "null"); if (c && Date.now() - c.t < 6e4) return c.v; } catch (e) {}
     const r = await fetch("/api/minecraft");
     if (!r.ok) throw new Error("http " + r.status);
     const v = await r.json();
-    try { sessionStorage.setItem("mc3", JSON.stringify({ t: Date.now(), v })); } catch (e) {}
+    try { sessionStorage.setItem("mc4", JSON.stringify({ t: Date.now(), v })); } catch (e) {}
     return v;
   };
   const lib = () => window.skinview3d ? Promise.resolve() : new Promise((ok, no) => { const s = el("script"); s.src = LIB; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
@@ -78,7 +78,7 @@
       viewer.render();
       const c = el("canvas"), src = viewer.canvas, w = 96, h = Math.round(96 * src.height / src.width);
       c.width = w; c.height = h; c.getContext("2d").drawImage(src, 0, 0, w, h);
-      const f = el("figure", "mc-shot"); const im = el("img"); im.src = c.toDataURL(); im.alt = lbl + " view"; f.append(im, el("figcaption", "mono", lbl));
+      const f = el("figure", "mc-shot"); const im = el("img"); im.width = w; im.height = h; im.src = c.toDataURL(); im.alt = lbl + " view"; f.append(im, el("figcaption", "mono", lbl));
       box.appendChild(f);
     });
     viewer.playerWrapper.rotation.y = y;
@@ -96,6 +96,10 @@
     await viewer.loadSkin(data.skin.data, { model: data.skin.model });
     const eq = data.capes.find(c => c.active);
     if (eq) await viewer.loadCape(eq.data);
+    const side = host.parentElement.querySelector(".mc-side"), wide = matchMedia("(min-width: 768px)");
+    const lock = () => { host.style.height = ""; if (wide.matches && side) host.style.height = Math.max(420, Math.round(side.getBoundingClientRect().height)) + "px"; };
+    let lt = 0;
+    addEventListener("resize", () => { clearTimeout(lt); lt = setTimeout(lock, 150); });
     new ResizeObserver(() => { if (host.clientWidth) viewer.setSize(host.clientWidth, host.clientHeight); }).observe(host);
     new IntersectionObserver(([e]) => { viewer.renderPaused = !e.isIntersecting; }).observe(host);
     addEventListener("pagehide", () => viewer.dispose());
@@ -105,6 +109,7 @@
     rot.hidden = false;
     paint();
     previews();
+    lock();
   };
 
   const start = async () => {

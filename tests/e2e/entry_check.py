@@ -29,7 +29,8 @@ with sync_playwright() as p:
         pos=pg.evaluate("(()=>{const s=document.querySelector('.zp-stage').getBoundingClientRect(),b=document.querySelector('.entry-btn').getBoundingClientRect();return {gap:Math.round(b.top-s.bottom),cx:Math.round((s.left+s.right)/2-innerWidth/2),bcx:Math.round((b.left+b.right)/2-innerWidth/2),bb:Math.round(innerHeight-b.bottom)}})()")
         ck(name+": text sits right under the zippo, centered, not pinned to the bottom",abs(pos["gap"])<=24 and abs(pos["cx"])<=2 and abs(pos["bcx"])<=2 and pos["bb"]>60)
         snap="document.querySelector('.zp-c').textContent.replace(/\\s/g,'').length"
-        ck(name+": ascii only (pre text, no image/svg/canvas/3d), starts open",pg.evaluate("!document.querySelector('#entry img,#entry svg,#entry canvas')")and pg.evaluate("document.querySelectorAll('#entry pre.zp-l').length")==3 and pg.evaluate("window.ZP.frames.length")>=8 and pg.evaluate(snap)>200 and pg.evaluate("document.querySelector('.zp-c').textContent")==pg.evaluate("window.ZP.frames[0].replace(/[^#%8&@\\n]/g,' ')"))
+        ck(name+": ascii only (pre text, no image/svg/canvas/3d), starts open",pg.evaluate("!document.querySelector('#entry img,#entry svg,#entry canvas')")and pg.evaluate("document.querySelectorAll('#entry pre.zp-l').length")==3 and pg.evaluate("window.ZP.frames.length")>=8 and pg.evaluate(snap)>200 and pg.evaluate("(()=>{const n=t=>t.split('\\n').map(l=>l.replace(/\\s+$/,'')).join('\\n').replace(/\\n+$/,'');return n(document.querySelector('.zp-c').textContent)===n(window.ZP.frames[0].replace(/[^#%8&@\\n]/g,' '))})()"))
+        pg.evaluate("(()=>{const s=document.querySelector('.zp-stage'),r0=s.getBoundingClientRect();window.__dev=0;(function f(){const e=document.querySelector('.zp-stage');if(e){const r=e.getBoundingClientRect();window.__dev=Math.max(window.__dev,Math.abs(r.left-r0.left),Math.abs(r.top-r0.top),Math.abs(r.width-r0.width),Math.abs(r.height-r0.height))}requestAnimationFrame(f)})()})()")
         pg.touchscreen.tap(12,12) if mobile else pg.mouse.click(12,12)
         pg.wait_for_timeout(60)
         ck(name+": closing state first",pg.evaluate(STATE)=="closing")
@@ -49,6 +50,7 @@ with sync_playwright() as p:
                 counts.append(pg.evaluate(snap)); pg.wait_for_timeout(30)
             ck(name+": zippo dissolves into characters (density drops to nothing)",len(counts)>=5 and counts[0]>counts[len(counts)//2]>=counts[-1] and counts[-1]<counts[0]*.15)
         pg.wait_for_function("['opening','open'].includes(document.documentElement.dataset.entry)",timeout=4000)
+        ck(name+": zippo never moves or resizes while closing and dissolving (stays in place)",pg.evaluate("window.__dev")<=1)
         ck(name+": site unlocked only now",pg.evaluate("getComputedStyle(document.querySelector('main')).visibility")=="visible")
         if name!="reduced": pg.screenshot(path=os.path.join(OUT,"opening-"+name+".png"))
         pg.wait_for_function("document.documentElement.dataset.entry==='open'",timeout=5000)
